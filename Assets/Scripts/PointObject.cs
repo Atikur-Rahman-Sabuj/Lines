@@ -9,5 +9,7 @@ public class PointObject : MonoBehaviour
         Debug.Log(gameObject.GetComponent<Transform>().position.ToString());
         GameObject script = GameObject.Find("script");
         script.GetComponent<DrawLine>().OnPointClick(gameObject);
+
+
     }
 }
