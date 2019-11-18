@@ -6,10 +6,8 @@ public class PointObject : MonoBehaviour
 {
     private void OnMouseDown()
     {
-        Debug.Log(gameObject.GetComponent<Transform>().position.ToString());
+        //Debug.Log(gameObject.GetComponent<Transform>().position.ToString());
         GameObject script = GameObject.Find("script");
         script.GetComponent<DrawLine>().OnPointClick(gameObject);
-
-
     }
 }

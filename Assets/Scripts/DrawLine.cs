@@ -1,40 +1,403 @@
-﻿using System.Collections;
+﻿using System;
+using System.Collections;
 using System.Collections.Generic;
+using TMPro;
 using UnityEngine;
+using UnityEngine.SceneManagement;
 
 public class DrawLine : MonoBehaviour
 {
-    public GameObject lineObject;
+    private int TotalPointInEachSide;
+    private float PointDistance;
+    public float StartingPointX = -5;
+    public float StartingPointY = -5;
+    public GameObject GlobalPointObject;
+    public GameObject GlobalLineObject;
+    public GameObject GlobalBoxObject;
+    private int TotalPoints;
+    private int TotalLines;
+    private int TotalBox;
+    private String STotalPointInEachSide  = "totalpointineachside";
+    public PlayerManagement PlayerManagement;
+
+    [Header("UI")]
+    public GameObject PlayerLabel1;
+    public GameObject PlayerLabel2;
+    public GameObject PlayerScore1;
+    public GameObject PlayerScore2;
+    public GameObject Score;
+    public GameObject Turn;
+
+
     public List<GameObject> lines = new List<GameObject>();
     private bool hasPreviousClick = false;
-    private Vector3 previousPosition;
-
-    public void OnStartClick()
+    private bool isFirstPlayerTurn = true;
+    public int LineDistance = 5;
+    public Material NotClicked;
+    public Material Clicked;
+    private Point previousClickedPoint;
+ 
+    public class Point
     {
-        Debug.Log("Click on draw line");
-        LineRenderer lineRenderer = lineObject.GetComponent<LineRenderer>();
-        lineRenderer.SetPosition(1, new Vector3(5, 0));
-        lines.Add(Instantiate(lineObject));
-        lines[0].GetComponent<LineRenderer>().SetPositions(new Vector3[] { new Vector3(5, 0) , new Vector3(5, 5)});
+        public GameObject PointObject;
+        public Vector3 Position;
+        public Point(GameObject pointObject, Vector3 position)
+        {
+            PointObject = Instantiate(pointObject);
+            Position = position;
+            PointObject.GetComponent<Transform>().position = position;
+        }
+        public Boolean IsThisPoint(GameObject pointObject)
+        {
+            return PointObject == pointObject;
+        }
+    }
+    
+    public class Line
+    {
+        public GameObject LineObject;
+        public Point StartPoint;
+        public Point EndPoint;
+        public Boolean IsDrawn;
+        public Line(GameObject lineObject, Point startPoint, Point endPoint)
+        {
+            this.LineObject = lineObject;
+            this.StartPoint = startPoint;
+            this.EndPoint = endPoint;
+            IsDrawn = false;
+        }
+        public void DrawLine(bool isFirstPlayerTurn, PlayerManagement playerManagement)
+        {
+            IsDrawn = true;
+            LineObject = Instantiate(LineObject);
+            Vector3 middlePoint = (StartPoint.Position + EndPoint.Position) / 2;
+            LineObject.GetComponent<LineRenderer>().SetPositions(new Vector3[] { StartPoint.Position, middlePoint, EndPoint.Position });
+            if (isFirstPlayerTurn)
+            {
+                LineObject.GetComponent<LineRenderer>().GetComponent<Renderer>().material.SetColor("_EmissionColor", playerManagement.Player1.Color);
+            }
+            else
+            {
+                LineObject.GetComponent<LineRenderer>().GetComponent<Renderer>().material.SetColor("_EmissionColor", playerManagement.Player2.Color);
+            }
+            
+        }
+        public Boolean IsThisLine(Point firstPoint, Point secondPoint)
+        {
+            if((StartPoint == firstPoint && EndPoint == secondPoint) || (StartPoint == secondPoint && EndPoint == firstPoint))
+            {
+                return true;
+            }
+            return false;
+        }
+    
+    }
+   
+    public class Box
+    {
+        public GameObject BoxObject;
+        public Vector3 Position;
+        public Line TopLine;
+        public Line BottomLine;
+        public Line LeftLine;
+        public Line RightLine;
+        public Boolean IsDrawn;
+        public Box(GameObject boxObject, Line topLine, Line bottomLine, Line leftLine, Line rightLine)
+        {
+            BoxObject = boxObject;
+            TopLine = topLine;
+            BottomLine = bottomLine;
+            LeftLine = leftLine;
+            RightLine = rightLine;
+            IsDrawn = false;
+            Position = new Vector3((topLine.StartPoint.Position.x + topLine.EndPoint.Position.x) / 2, (leftLine.StartPoint.Position.y + leftLine.EndPoint.Position.y) / 2);
+        }
+        public void DrawBox(bool isFirstPlayerTurn, PlayerManagement playerManagement)
+        {
+            BoxObject = Instantiate(BoxObject);
+            BoxObject.GetComponent<Transform>().position = Position;
+            IsDrawn = true;
+            if (isFirstPlayerTurn)
+            {
+                BoxObject.GetComponent<Renderer>().material.SetColor("_EmissionColor", playerManagement.Player1.Color);
+            }
+            else
+            {
+                BoxObject.GetComponent<Renderer>().material.SetColor("_EmissionColor", playerManagement.Player2.Color);
+            }
+        }
+        public Boolean IsLineOfThisBox(Line line)
+        {
+            return (TopLine == line) || (BottomLine == line) || (LeftLine == line) || (RightLine == line);
+        }
+        public Boolean CanDrawBox()
+        {
+            return TopLine.IsDrawn && BottomLine.IsDrawn && LeftLine.IsDrawn && RightLine.IsDrawn;
+        }
+
+    }
+    
+    public List<List<Point>> Points = new List<List<Point>>();
+    public List<List<Line>> HorizontalLines = new List<List<Line>>();
+    public List<List<Line>> VerticalLines = new List<List<Line>>();
+    public List<List<Box>> Boxes = new List<List<Box>>();
+    void Start()
+    {
+        Debug.Log(PlayerPrefs.HasKey(STotalPointInEachSide)); 
+        TotalPointInEachSide = PlayerPrefs.GetInt(STotalPointInEachSide, 6);
+        Debug.Log(TotalPointInEachSide.ToString());
+        PointDistance = (10*1.0f) / ((TotalPointInEachSide * 1.0f) - 1);
+        GlobalBoxObject.GetComponent<Transform>().localScale = new Vector3(PointDistance - 1, PointDistance - 1);
+        PlayerManagement = gameObject.GetComponent<PlayerManagement>();
+        PlayerManagement.SetPlayers();
+        PlayerLabel1.GetComponent<TextMeshProUGUI>().SetText(PlayerManagement.Player1.Name);
+        PlayerLabel2.GetComponent<TextMeshProUGUI>().SetText(PlayerManagement.Player2.Name);
+        PlayerScore1.GetComponent<TextMeshProUGUI>().SetText("0");
+        PlayerScore2.GetComponent<TextMeshProUGUI>().SetText("0");
+        Score.GetComponent<TextMeshProUGUI>().SetText("");
+        Turn.GetComponent<TextMeshProUGUI>().SetText("First player turn");
+        TotalPoints = TotalPointInEachSide * TotalPointInEachSide;
+        TotalLines = (TotalPointInEachSide * (TotalPointInEachSide - 1)) * 2;
+        TotalBox = (TotalPointInEachSide - 1) * (TotalPointInEachSide - 1);
+        DrawPoints();
+        DrawLines();
+        DrawBoxes();
     }
 
-    public void DrawNewLine(Vector3 startPosition, Vector3 endPosition)
+    private void DrawBoxes()
     {
-        lines.Add(Instantiate(lineObject));
-        lines[lines.Count-1].GetComponent<LineRenderer>().SetPositions(new Vector3[] { startPosition, endPosition });
+        for (int i = 0; i < TotalPointInEachSide - 1; i++)
+        {
+            List<Box> boxes = new List<Box>();
+            for (int j = 0; j < TotalPointInEachSide - 1; j++)
+            {
+                //Line topLine, Line bottomLine, Line leftLine, Line rightLine
+                Box box = new Box(GlobalBoxObject, HorizontalLines[i+1][j], HorizontalLines[i][j], VerticalLines[j][i], VerticalLines[j+1][i]);
+                boxes.Add(box);
+            }
+            Boxes.Add(boxes);
+        }
     }
-    public void OnPointClick(GameObject point)
+
+    private void DrawLines()
     {
+        for(int i = 0; i<TotalPointInEachSide; i++)
+        {
+            List<Line> horizontalLines = new List<Line>();
+            List<Line> verticalLines = new List<Line>();
+            for (int j = 0; j < TotalPointInEachSide-1; j++)
+            {
+                Line horizontalLine = new Line(GlobalLineObject, Points[i][j], Points[i][j + 1]);
+
+                horizontalLines.Add(horizontalLine);
+                Line verticalLine = new Line(GlobalLineObject, Points[j][i], Points[j+1][i]);
+
+                verticalLines.Add(verticalLine);
+            }
+            
+            HorizontalLines.Add(horizontalLines);
+            VerticalLines.Add(verticalLines);
+        }
+    }
+
+    private void DrawPoints()
+    {
+        float pointX = StartingPointX;
+        float pointY = StartingPointY;
+        for(int i = 0; i<TotalPointInEachSide; i++)
+        {
+            List<Point> points = new List<Point>();
+ 
+            for (int j = 0; j < TotalPointInEachSide; j++)
+            {
+                Vector3 position = new Vector3(pointX, pointY);
+                points.Add(new Point(GlobalPointObject, position));
+                pointX += PointDistance;
+            }
+            Points.Add(points);
+            pointY += PointDistance;
+            pointX = StartingPointX;
+        }
+    }
+
+    public void OnResetClick()
+    {
+        //PlayerPrefs.SetInt("STotalPointInEachSide", 5);
+        SceneManager.LoadScene(SceneManager.GetActiveScene().name);
+    } public void Play4Point()
+    {
+        Debug.Log("Button 4");
+        PlayerPrefs.SetInt(STotalPointInEachSide, 4);
+        PlayerPrefs.Save();
+        SceneManager.LoadScene(SceneManager.GetActiveScene().name);
+    } public void Play5Point()
+    {
+        Debug.Log("Button 5");
+        PlayerPrefs.SetInt(STotalPointInEachSide, 5);
+        PlayerPrefs.Save();
+        SceneManager.LoadScene(SceneManager.GetActiveScene().name);
+    } public void Play6Point()
+    {
+        Debug.Log("Button 6");
+        PlayerPrefs.SetInt(STotalPointInEachSide, 6);
+        PlayerPrefs.Save();
+        SceneManager.LoadScene(SceneManager.GetActiveScene().name);
+    }
+
+    public void OnPointClick(GameObject ClickObject)
+    {
+        Point point = null;
+        for (int i = 0; i < Points.Count; i++)
+        {
+            for (int j = 0; j < Points[i].Count; j++)
+            {
+                if (Points[i][j].IsThisPoint(ClickObject))
+                {
+                    point = Points[i][j];
+                }
+            }
+        }
+
         if (!hasPreviousClick)
         {
-            previousPosition = point.GetComponent<Transform>().position;
-            hasPreviousClick = true;
+            FirstClick(point);
         }
         else
         {
-            DrawNewLine(previousPosition, point.GetComponent<Transform>().position);
-            hasPreviousClick = false;
+            if (previousClickedPoint == point)
+            {
+                RemoveClickedColor(previousClickedPoint);
+                hasPreviousClick = false;
+                previousClickedPoint = null;
+                Debug.Log("Already Click in this");
+            }
 
+            else
+            {
+                SecondClick(point);
+                Debug.Log("Line Drawn");
+            }
         }
     }
+
+
+    private void FirstClick(Point point)
+    {
+        if(previousClickedPoint != null)
+        {
+            RemoveClickedColor(previousClickedPoint);
+        }
+        previousClickedPoint = point;
+        hasPreviousClick = true;
+        ApplyClickedColor(point);
+    }
+    private void SecondClick(Point clickPoint)
+    {
+        //Lines.Add(new Line(GlobalLineObject, previousClickedObject.GetComponent<Transform>().position, ClickObject.GetComponent<Transform>().position, isFirstPlayerTurn, PlayerManagement));
+        Line line = null;
+        for (int i = 0; i < HorizontalLines.Count; i++)
+        {
+            for (int j = 0; j < HorizontalLines[i].Count; j++)
+            {
+                if(HorizontalLines[i][j].IsThisLine(previousClickedPoint, clickPoint))
+                {
+                    line = HorizontalLines[i][j];
+                }
+            }
+        }
+        if (line == null)
+        {
+            for (int i = 0; i < VerticalLines.Count; i++)
+            {
+                for (int j = 0; j < VerticalLines[i].Count; j++)
+                {
+                    if (VerticalLines[i][j].IsThisLine(previousClickedPoint, clickPoint))
+                    {
+                        line = VerticalLines[i][j];
+                    }
+                }
+            }
+        }
+        if(line == null)
+        {
+            FirstClick(clickPoint);
+            return;
+        }
+        if (line.IsDrawn)
+        {
+            FirstClick(clickPoint);
+            return;
+        }
+        line.DrawLine(isFirstPlayerTurn, PlayerManagement);
+        OnSuccessfulLineDraw(line);
+        isFirstPlayerTurn = !isFirstPlayerTurn;
+        if (isFirstPlayerTurn)
+        {
+            Turn.GetComponent<TextMeshProUGUI>().SetText("First player turn");
+        }
+        else
+        {
+            Turn.GetComponent<TextMeshProUGUI>().SetText("Second player turn");
+        }
+        RemoveClickedColor(previousClickedPoint);
+        previousClickedPoint = null;
+        hasPreviousClick = false;
+    }
+    private void OnSuccessfulLineDraw(Line line)
+    {
+        Boolean anyBoxDrawn = false;
+        for (int i = 0; i < Boxes.Count; i++)
+        {
+            for (int j = 0; j < Boxes[i].Count; j++)
+            {
+                if (Boxes[i][j].IsLineOfThisBox(line))
+                {
+ 
+                    if (Boxes[i][j].CanDrawBox() && !Boxes[i][j].IsDrawn)
+                    {
+                        anyBoxDrawn = true;
+                        Boxes[i][j].DrawBox(isFirstPlayerTurn, PlayerManagement);
+                        if (isFirstPlayerTurn)
+                        {
+                            PlayerManagement.Player1.Score += 1;
+                            PlayerScore1.GetComponent<TextMeshProUGUI>().SetText(PlayerManagement.Player1.Score.ToString());
+                        }
+                        else
+                        {
+                            PlayerManagement.Player2.Score += 1;
+                            PlayerScore2.GetComponent<TextMeshProUGUI>().SetText(PlayerManagement.Player2.Score.ToString());
+                        }
+                    }
+                }
+            }
+        }
+        if (anyBoxDrawn)
+        {
+            isFirstPlayerTurn = !isFirstPlayerTurn;
+        }
+        if((PlayerManagement.Player1.Score + PlayerManagement.Player2.Score) >= TotalBox)
+        {
+            if(PlayerManagement.Player1.Score> PlayerManagement.Player2.Score)
+            {
+                Score.GetComponent<TextMeshProUGUI>().SetText("Player 1 Wins");
+            }
+            else if (PlayerManagement.Player1.Score < PlayerManagement.Player2.Score)
+            {
+                Score.GetComponent<TextMeshProUGUI>().SetText("Player 2 Wins");
+            }
+            else
+            {
+                Score.GetComponent<TextMeshProUGUI>().SetText("It's a Tie");
+            }
+        }
+    }
+    private void ApplyClickedColor(Point point)
+    {
+        point.PointObject.GetComponent<Renderer>().material.SetColor("_EmissionColor", Color.blue);
+    }
+    private void RemoveClickedColor(Point point)
+    {
+        point.PointObject.GetComponent<Renderer>().material.SetColor("_EmissionColor", Color.white);
+    }
+
 }
