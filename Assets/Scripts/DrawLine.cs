@@ -19,6 +19,7 @@ public class DrawLine : MonoBehaviour
     private int TotalBox;
     private String STotalPointInEachSide  = "totalpointineachside";
     public PlayerManagement PlayerManagement;
+    public Boolean IsPlayingWithComputer;
 
     [Header("UI")]
     public GameObject PlayerLabel1;
@@ -70,8 +71,12 @@ public class DrawLine : MonoBehaviour
         {
             IsDrawn = true;
             LineObject = Instantiate(LineObject);
-            Vector3 middlePoint = (StartPoint.Position + EndPoint.Position) / 2;
-            LineObject.GetComponent<LineRenderer>().SetPositions(new Vector3[] { StartPoint.Position, middlePoint, EndPoint.Position });
+            //Vector3 middlePoint = (StartPoint.Position + EndPoint.Position) / 2;
+            Vector3 startPoint = StartPoint.Position;
+            startPoint.z = 0;
+            Vector3 endPoint = EndPoint.Position;
+            endPoint.z = 0;
+            LineObject.GetComponent<LineRenderer>().SetPositions(new Vector3[] { startPoint, endPoint });
             if (isFirstPlayerTurn)
             {
                 LineObject.GetComponent<LineRenderer>().GetComponent<Renderer>().material.SetColor("_EmissionColor", playerManagement.Player1.Color);
@@ -133,6 +138,27 @@ public class DrawLine : MonoBehaviour
         public Boolean CanDrawBox()
         {
             return TopLine.IsDrawn && BottomLine.IsDrawn && LeftLine.IsDrawn && RightLine.IsDrawn;
+        }
+        public int TotalLineDrawn()
+        {
+            int lineNumber = 0;
+            if (TopLine.IsDrawn)
+            {
+                lineNumber++;
+            }
+            if (BottomLine.IsDrawn)
+            {
+                lineNumber++;
+            }
+            if (LeftLine.IsDrawn)
+            {
+                lineNumber++;
+            }
+            if (RightLine.IsDrawn)
+            {
+                lineNumber++;
+            }
+            return lineNumber;
         }
 
     }
@@ -210,7 +236,7 @@ public class DrawLine : MonoBehaviour
  
             for (int j = 0; j < TotalPointInEachSide; j++)
             {
-                Vector3 position = new Vector3(pointX, pointY);
+                Vector3 position = new Vector3(pointX, pointY, -10);
                 points.Add(new Point(GlobalPointObject, position));
                 pointX += PointDistance;
             }
@@ -331,17 +357,27 @@ public class DrawLine : MonoBehaviour
         line.DrawLine(isFirstPlayerTurn, PlayerManagement);
         OnSuccessfulLineDraw(line);
         isFirstPlayerTurn = !isFirstPlayerTurn;
+        RemoveClickedColor(previousClickedPoint);
+        previousClickedPoint = null;
+        hasPreviousClick = false;
         if (isFirstPlayerTurn)
         {
             Turn.GetComponent<TextMeshProUGUI>().SetText("First player turn");
         }
         else
         {
-            Turn.GetComponent<TextMeshProUGUI>().SetText("Second player turn");
+            if (IsPlayingWithComputer)
+            {
+                ComputerTurn();
+                Turn.GetComponent<TextMeshProUGUI>().SetText("Computer turn");
+            }
+            else
+            {
+                Turn.GetComponent<TextMeshProUGUI>().SetText("Second player turn");
+            }
+            
         }
-        RemoveClickedColor(previousClickedPoint);
-        previousClickedPoint = null;
-        hasPreviousClick = false;
+        
     }
     private void OnSuccessfulLineDraw(Line line)
     {
@@ -399,5 +435,106 @@ public class DrawLine : MonoBehaviour
     {
         point.PointObject.GetComponent<Renderer>().material.SetColor("_EmissionColor", Color.white);
     }
+    private void ComputerTurn()
+    {
+        Boolean gotAMove = false;
+        Box box= null;
+        //check if can complete a box
+        for (int i = 0; i < Boxes.Count; i++)
+        {
+            for (int j = 0; j < Boxes[i].Count; j++)
+            {
+                if (Boxes[i][j].TotalLineDrawn() == 3)
+                {
+                    gotAMove = true;
+                    box = Boxes[i][j];
+                    
+                    break;
+                }
+                if (gotAMove)
+                {
+                    break;
+                }
+            }   
+        }
+        
+        if (gotAMove)
+        {
+            ComputerCompleteBox(box);
+            return;
+        }
+        //find a box that has less then 2 lines to drawn
+        for (int i = 0; i < Boxes.Count; i++)
+        {
+            for (int j = 0; j < Boxes[i].Count; j++)
+            {
+                if (Boxes[i][j].TotalLineDrawn() < 2)
+                {
+                    gotAMove = true;
+                    box = Boxes[i][j];
+                    
+                    break;
+                }
+                if (gotAMove)
+                {
+                    break;
+                }
+            }
+        }
+        if (gotAMove)
+        {
+            ComputerCompleteBox(box);
+            return;
+        }
+        //if not go for box that has two line drawn
+        for (int i = 0; i < Boxes.Count; i++)
+        {
+            for (int j = 0; j < Boxes[i].Count; j++)
+            {
+                if (Boxes[i][j].TotalLineDrawn() < 4)
+                {
+                    gotAMove = true;
+                    box = Boxes[i][j];
+                    
+                    break;
+                }
+                if (gotAMove)
+                {
+                    break;
+                }
+            }
+        }
+        if (gotAMove)
+        {
+            ComputerCompleteBox(box);
+            return;
+        }
+
+    }
+    private void ComputerCompleteBox(Box box)
+    {
+        if (!box.LeftLine.IsDrawn)
+        {
+            ComputerDrawLine(box.LeftLine);
+        }
+        else if (!box.RightLine.IsDrawn)
+        {
+            ComputerDrawLine(box.RightLine);
+        }
+        else if (!box.TopLine.IsDrawn)
+        {
+            ComputerDrawLine(box.TopLine);
+        }
+        else
+        {
+            ComputerDrawLine(box.BottomLine);
+        }
+    }
+    private void ComputerDrawLine(Line line)
+    {
+        FirstClick(line.StartPoint);
+        SecondClick(line.EndPoint);
+    }
+
 
 }

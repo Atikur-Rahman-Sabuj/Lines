@@ -73,7 +73,6 @@ LineRenderer:
   m_Positions:
   - {x: 0, y: 0, z: 0}
   - {x: 0, y: 0, z: 0}
-  - {x: 0, y: 0, z: 0}
   m_Parameters:
     serializedVersion: 3
     widthMultiplier: 1
@@ -82,30 +81,12 @@ LineRenderer:
       m_Curve:
       - serializedVersion: 3
         time: 0
-        value: 0.8
-        inSlope: 0.066748165
-        outSlope: 0.066748165
-        tangentMode: 0
-        weightedMode: 0
-        inWeight: 0.33333334
-        outWeight: 0.21428953
-      - serializedVersion: 3
-        time: 0.4917701
-        value: 0.8
+        value: 0.16196744
         inSlope: -0.016026886
         outSlope: -0.016026886
         tangentMode: 0
         weightedMode: 0
         inWeight: 0.33333334
-        outWeight: 0.33333334
-      - serializedVersion: 3
-        time: 1
-        value: 0.8
-        inSlope: -0
-        outSlope: -0
-        tangentMode: 0
-        weightedMode: 0
-        inWeight: 0.14284468
         outWeight: 0.33333334
       m_PreInfinity: 2
       m_PostInfinity: 2

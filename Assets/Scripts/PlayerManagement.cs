@@ -18,11 +18,7 @@ public class PlayerManagement : MonoBehaviour
     }
     public Player Player1;
     public Player Player2;
-    // Start is called before the first frame update
-    void Start()
-    {
-        
-    }
+
 
     public void SetPlayers()
     {
