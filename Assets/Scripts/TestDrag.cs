@@ -29,4 +29,8 @@ public class TestDrag : MonoBehaviour
         LineRenderer.GetComponent<LineRenderer>().SetPositions(new Vector3[] { gameObject.GetComponent<Transform>().position,  endPosition});
         Debug.Log(Tag + " : " + Input.mousePosition.ToString());
     }
+    private void OnMouseUp()
+    {
+        Debug.Log(Tag +" "+"Mouseup"+" : " + Input.mousePosition.ToString());
+    }
 }

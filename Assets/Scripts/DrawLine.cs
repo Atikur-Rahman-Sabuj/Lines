@@ -32,7 +32,7 @@ public class DrawLine : MonoBehaviour
 
     public List<GameObject> lines = new List<GameObject>();
     private bool hasPreviousClick = false;
-    private bool isFirstPlayerTurn = true;
+    public bool isFirstPlayerTurn = true;
     public int LineDistance = 5;
     public Material NotClicked;
     public Material Clicked;
@@ -378,6 +378,29 @@ public class DrawLine : MonoBehaviour
             
         }
         
+    }
+    public void PlayerDrawLine(Line line)
+    {
+        line.DrawLine(isFirstPlayerTurn, PlayerManagement);
+        OnSuccessfulLineDraw(line);
+        isFirstPlayerTurn = !isFirstPlayerTurn;
+        if (isFirstPlayerTurn)
+        {
+            Turn.GetComponent<TextMeshProUGUI>().SetText("First player turn");
+        }
+        else
+        {
+            if (IsPlayingWithComputer)
+            {
+                ComputerTurn();
+                Turn.GetComponent<TextMeshProUGUI>().SetText("Computer turn");
+            }
+            else
+            {
+                Turn.GetComponent<TextMeshProUGUI>().SetText("Second player turn");
+            }
+
+        }
     }
     private void OnSuccessfulLineDraw(Line line)
     {
