@@ -20,6 +20,9 @@ public class DrawLine : MonoBehaviour
     private String STotalPointInEachSide  = "totalpointineachside";
     public PlayerManagement PlayerManagement;
     public Boolean IsPlayingWithComputer;
+    [Header("For online")]
+    public Boolean IsPlayingOnline;
+    public GameManager GameManager;
 
     [Header("UI")]
     public GameObject PlayerLabel1;
@@ -169,6 +172,8 @@ public class DrawLine : MonoBehaviour
     public List<List<Box>> Boxes = new List<List<Box>>();
     void Start()
     {
+        IsPlayingWithComputer = false;
+        IsPlayingOnline = true;
         Debug.Log(PlayerPrefs.HasKey(STotalPointInEachSide)); 
         TotalPointInEachSide = PlayerPrefs.GetInt(STotalPointInEachSide, 6);
         Debug.Log(TotalPointInEachSide.ToString());
@@ -384,6 +389,16 @@ public class DrawLine : MonoBehaviour
         line.DrawLine(isFirstPlayerTurn, PlayerManagement);
         OnSuccessfulLineDraw(line);
         isFirstPlayerTurn = !isFirstPlayerTurn;
+
+        if (IsPlayingOnline)
+        {
+            GameManager.GetComponent<GameManager>().OnTurnComplete();
+
+
+            return;
+        }
+
+
         if (isFirstPlayerTurn)
         {
             Turn.GetComponent<TextMeshProUGUI>().SetText("First player turn");

@@ -12,10 +12,12 @@ public class NetworkConnectionManager : MonoBehaviourPunCallbacks
 
     public bool TriesToConnectToMaster;
     public bool TriesToConnectToRoom;
+    private string ROOMNAME = "my-custom-room-1";
 
     // Use this for initialization
     void Start()
     {
+        //DontDestroyOnLoad(gameObject);
         TriesToConnectToMaster = false;
         TriesToConnectToRoom = false;
     }
@@ -23,17 +25,19 @@ public class NetworkConnectionManager : MonoBehaviourPunCallbacks
     // Update is called once per frame
     void Update()
     {
+        if(BtnConnectMaster!=null)
         BtnConnectMaster.gameObject.SetActive(!PhotonNetwork.IsConnected && !TriesToConnectToMaster);
+        if(BtnConnectRoom!=null)
         BtnConnectRoom.gameObject.SetActive(PhotonNetwork.IsConnected && !TriesToConnectToMaster && !TriesToConnectToRoom);
     }
 
     public void OnClickConnectToMaster()
     {
         //Settings (all optional and only for tutorial purpose)
-        PhotonNetwork.OfflineMode = false;           //true would "fake" an online connection
+        //PhotonNetwork.OfflineMode = false;           //true would "fake" an online connection
         PhotonNetwork.NickName = "PlayerName";       //to set a player name
         PhotonNetwork.AutomaticallySyncScene = true; //to call PhotonNetwork.LoadLevel()
-        PhotonNetwork.GameVersion = "v1";            //only people with the same game version can play together
+        //PhotonNetwork.GameVersion = "v1";            //only people with the same game version can play together
 
         TriesToConnectToMaster = true;
         //PhotonNetwork.ConnectToMaster(ip,port,appid); //manual connection
@@ -63,21 +67,30 @@ public class NetworkConnectionManager : MonoBehaviourPunCallbacks
 
         TriesToConnectToRoom = true;
         //PhotonNetwork.CreateRoom("Peter's Game 1"); //Create a specific Room - Error: OnCreateRoomFailed
-        //PhotonNetwork.JoinRoom("Peter's Game 1");   //Join a specific Room   - Error: OnJoinRoomFailed  
-        PhotonNetwork.JoinRandomRoom();               //Join a random Room     - Error: OnJoinRandomRoomFailed  
+        PhotonNetwork.JoinRoom(ROOMNAME);   //Join a specific Room   - Error: OnJoinRoomFailed  
+        //PhotonNetwork.JoinRandomRoom();               //Join a random Room     - Error: OnJoinRandomRoomFailed  
+    }
+
+    public override void OnJoinRoomFailed(short returnCode, string message)
+    {
+        base.OnJoinRoomFailed(returnCode, message);
+        Debug.Log("Room join fail message: " + message);
+        //no room available
+        //create a room (null as a name means "does not matter")
+        PhotonNetwork.CreateRoom(ROOMNAME, new RoomOptions { MaxPlayers = 2 });
     }
 
     public override void OnJoinRandomFailed(short returnCode, string message)
     {
         base.OnJoinRandomFailed(returnCode, message);
+        Debug.Log("Room join fail message: " + message);
         //no room available
         //create a room (null as a name means "does not matter")
-        PhotonNetwork.CreateRoom(null, new RoomOptions { MaxPlayers = 20 });
+        PhotonNetwork.CreateRoom(null, new RoomOptions { MaxPlayers = 2 });
     }
 
     public override void OnCreateRoomFailed(short returnCode, string message)
     {
-        base.OnCreateRoomFailed(returnCode, message);
         Debug.Log(message);
         base.OnCreateRoomFailed(returnCode, message);
         TriesToConnectToRoom = false;
@@ -85,10 +98,15 @@ public class NetworkConnectionManager : MonoBehaviourPunCallbacks
 
     public override void OnJoinedRoom()
     {
-        base.OnJoinedRoom();
-        TriesToConnectToRoom = false;
-        Debug.Log("test");
-        Debug.Log("Master: " + PhotonNetwork.IsMasterClient + " | Players In Room: " + PhotonNetwork.CurrentRoom.PlayerCount + " | RoomName: " + PhotonNetwork.CurrentRoom.Name);
-        SceneManager.LoadScene("MultiplayerGame");
+        if (TriesToConnectToRoom)
+        {
+            base.OnJoinedRoom();
+            TriesToConnectToRoom = false;
+            Debug.Log("test");
+            Debug.Log("Master: " + PhotonNetwork.IsMasterClient + " | Players In Room: " + PhotonNetwork.CurrentRoom.PlayerCount + " | RoomName: " + PhotonNetwork.CurrentRoom.Name);
+            SceneManager.LoadScene("MultiplayerGame");
+        }
+        
     }
+   
 }

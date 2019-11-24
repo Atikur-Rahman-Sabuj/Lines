@@ -8,12 +8,14 @@ public class PointObject : MonoBehaviour
     private GameObject Script;
     private bool IsDraging;
     private DrawLine.Line lineToDraw;
+    public GameObject GameManager;
     //public DrawLine;
 
     void Start()
     {
         
         LineRenderer = GameObject.Find("line_for_drag");
+        GameManager = GameObject.Find("GameManager");
         IsDraging = false;
         lineToDraw = null;
 
@@ -27,6 +29,10 @@ public class PointObject : MonoBehaviour
     }
     void OnMouseDrag()
     {
+        if (GameManager != null && GameManager.GetComponent<GameManager>().Turn == false)
+        {
+            return;
+        }
         IsDraging = true;
         lineToDraw = null;
         Script = GameObject.Find("script");
@@ -123,7 +129,11 @@ public class PointObject : MonoBehaviour
     }
     private void OnMouseUp()
     {
-        // Debug.Log(Tag + " " + "Mouseup" + " : " + Input.mousePosition.ToString());
+        if (GameManager != null && GameManager.GetComponent<GameManager>().Turn == false)
+        {
+            return;
+        }
+
         if (IsDraging)
         {
             if (lineToDraw != null)

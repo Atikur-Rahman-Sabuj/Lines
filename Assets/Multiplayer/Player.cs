@@ -7,29 +7,26 @@ using TMPro;
 public class Player : MonoBehaviourPun
 {
     public GameObject ShowGotData;
-    [HideInInspector]
-    public InputStr Input;
-    public struct InputStr
-    {
-        public float LookX;
-        public float LookZ;
-        public float RunX;
-        public float RunZ;
-        public bool Jump;
-    }
+    public GameObject GameManager;
     System.Random rnd;
 
     private void Awake()
     {
-        rnd = new System.Random();
-        ShowGotData = GameObject.Find("GotData");
+        
         //destroy the controller if the player is not controlled by me
         if (!photonView.IsMine)
         {
             //do something for your game object
         }
-            
+
     }
+    private void Start()
+    {
+        rnd = new System.Random();
+        ShowGotData = GameObject.Find("GotData");
+        GameManager = GameObject.Find("GameManager");
+    }
+
 
     private void Update()
     {
@@ -69,7 +66,7 @@ public class Player : MonoBehaviourPun
     {
         Debug.Log(photonView.ViewID);
         //Remote Procedure call
-        photonView.RPC("SendData", RpcTarget.All, photonView.ViewID, rnd.Next(1,50));
+        photonView.RPC("SendData", RpcTarget.All, photonView.ViewID, rnd.Next(1, 50));
     }
 
     [PunRPC]
@@ -83,7 +80,29 @@ public class Player : MonoBehaviourPun
         {
             ShowGotData.GetComponent<TextMeshProUGUI>().SetText(value.ToString());
         }
-        
+
+        //Properties
+        //PhotonNetwork.LocalPlayer.CustomProperties.Add("state", "dead");
+        //access by: PhotonNetwork.PlayerListOthers[0].CustomProperties["state"]
+    } 
+    public void TurnChange()
+    {
+        Debug.Log(photonView.ViewID);
+        //Remote Procedure call
+        photonView.RPC("ChangeTurn", RpcTarget.All, photonView.ViewID);
+    }
+
+    [PunRPC]
+    void ChangeTurn(int senderViewId,PhotonMessageInfo info)
+    {
+        Debug.Log(senderViewId.ToString() + "   " + photonView.ViewID);
+        Debug.Log(photonView.IsMine);
+
+        if (!photonView.IsMine)
+        {
+            GameManager.GetComponent<GameManager>().Turn = true;
+        }
+
         //Properties
         //PhotonNetwork.LocalPlayer.CustomProperties.Add("state", "dead");
         //access by: PhotonNetwork.PlayerListOthers[0].CustomProperties["state"]

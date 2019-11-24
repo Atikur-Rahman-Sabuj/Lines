@@ -16,7 +16,7 @@ MonoBehaviour:
     AppIdRealtime: ea28c3b4-c9de-4149-a0c0-5b74b74a68d3
     AppIdChat: 
     AppIdVoice: 
-    AppVersion: 
+    AppVersion: v1
     UseNameServer: 1
     FixedRegion: 
     Server: 
@@ -24,7 +24,7 @@ MonoBehaviour:
     Protocol: 0
     EnableLobbyStatistics: 0
     NetworkLogging: 1
-  PunLogging: 0
+  PunLogging: 2
   EnableSupportLogger: 0
   RunInBackground: 1
   StartInOfflineMode: 0
@@ -35,5 +35,6 @@ MonoBehaviour:
   - Fire
   - RespawnSpaceship
   - SendData
+  - ChangeTurn
   DisableAutoOpenWizard: 1
   ShowSettings: 1
