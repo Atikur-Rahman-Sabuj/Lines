@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Photon.Pun;
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using TMPro;
@@ -40,6 +41,7 @@ public class DrawLine : MonoBehaviour
     public Material NotClicked;
     public Material Clicked;
     private Point previousClickedPoint;
+    private bool newBoxDrawn;
  
     public class Point
     {
@@ -98,7 +100,15 @@ public class DrawLine : MonoBehaviour
             }
             return false;
         }
-    
+        public Boolean IsThisLine(Vector3 firstPoint, Vector3 secondPoint)
+        {
+            if ((StartPoint.Position == firstPoint && EndPoint.Position == secondPoint) || (StartPoint.Position == secondPoint && EndPoint.Position == firstPoint))
+            {
+                return true;
+            }
+            return false;
+        }
+
     }
    
     public class Box
@@ -384,15 +394,110 @@ public class DrawLine : MonoBehaviour
         }
         
     }
+    public void OnlineDrawLine(Vector3 startPoint, Vector3 endPoint)
+    {
+        Line line = null;
+        for (int i = 0; i < HorizontalLines.Count; i++)
+        {
+            for (int j = 0; j < HorizontalLines[i].Count; j++)
+            {
+                if (HorizontalLines[i][j].IsThisLine(startPoint, endPoint))
+                {
+                    line = HorizontalLines[i][j];
+                }
+            }
+        }
+        if (line == null)
+        {
+            for (int i = 0; i < VerticalLines.Count; i++)
+            {
+                for (int j = 0; j < VerticalLines[i].Count; j++)
+                {
+                    if (VerticalLines[i][j].IsThisLine(startPoint, endPoint))
+                    {
+                        line = VerticalLines[i][j];
+                    }
+                }
+            }
+        }
+        line.DrawLine(isFirstPlayerTurn, PlayerManagement);
+        OnSuccessfulLineDraw(line);
+        //isFirstPlayerTurn = !isFirstPlayerTurn;
+        GameManager.GetComponent<GameManager>().OnTurnComplete(startPoint, endPoint, true);
+        return;
+        
+
+    }
+    public void ReflectOtherNetworkPlayerTurn(Vector3 startPoint, Vector3 endPoint, bool isAdminPlayer)
+    {
+        Line line = null;
+        for (int i = 0; i < HorizontalLines.Count; i++)
+        {
+            for (int j = 0; j < HorizontalLines[i].Count; j++)
+            {
+                if (HorizontalLines[i][j].IsThisLine(startPoint, endPoint))
+                {
+                    line = HorizontalLines[i][j];
+                }
+            }
+        }
+        if (line == null)
+        {
+            for (int i = 0; i < VerticalLines.Count; i++)
+            {
+                for (int j = 0; j < VerticalLines[i].Count; j++)
+                {
+                    if (VerticalLines[i][j].IsThisLine(startPoint, endPoint))
+                    {
+                        line = VerticalLines[i][j];
+                    }
+                }
+            }
+        }
+        line.DrawLine(isAdminPlayer, PlayerManagement);
+        for (int i = 0; i < Boxes.Count; i++)
+        {
+            for (int j = 0; j < Boxes[i].Count; j++)
+            {
+                if (Boxes[i][j].IsLineOfThisBox(line))
+                {
+
+                    if (Boxes[i][j].CanDrawBox() && !Boxes[i][j].IsDrawn)
+                    {
+                        Boxes[i][j].DrawBox(isAdminPlayer, PlayerManagement);
+                        if (isFirstPlayerTurn)
+                        {
+                            PlayerManagement.Player1.Score += 1;
+                            PlayerScore1.GetComponent<TextMeshProUGUI>().SetText(PlayerManagement.Player1.Score.ToString());
+                        }
+                        else
+                        {
+                            PlayerManagement.Player2.Score += 1;
+                            PlayerScore2.GetComponent<TextMeshProUGUI>().SetText(PlayerManagement.Player2.Score.ToString());
+                        }
+                    }
+                }
+            }
+        }
+    }
     public void PlayerDrawLine(Line line)
     {
-        line.DrawLine(isFirstPlayerTurn, PlayerManagement);
+        
+        if (IsPlayingOnline)
+        {
+            line.DrawLine(PhotonNetwork.IsMasterClient, PlayerManagement);
+        }
+        else
+        {
+            line.DrawLine(isFirstPlayerTurn, PlayerManagement);
+        }
+        newBoxDrawn = false;
         OnSuccessfulLineDraw(line);
         isFirstPlayerTurn = !isFirstPlayerTurn;
 
         if (IsPlayingOnline)
         {
-            GameManager.GetComponent<GameManager>().OnTurnComplete();
+            GameManager.GetComponent<GameManager>().OnTurnComplete(line.StartPoint.Position, line.EndPoint.Position, newBoxDrawn);
 
 
             return;
@@ -430,7 +535,15 @@ public class DrawLine : MonoBehaviour
                     if (Boxes[i][j].CanDrawBox() && !Boxes[i][j].IsDrawn)
                     {
                         anyBoxDrawn = true;
-                        Boxes[i][j].DrawBox(isFirstPlayerTurn, PlayerManagement);
+                        if (IsPlayingOnline)
+                        {
+                            Boxes[i][j].DrawBox(PhotonNetwork.IsMasterClient, PlayerManagement);
+                        }
+                        else
+                        {
+                            Boxes[i][j].DrawBox(isFirstPlayerTurn, PlayerManagement);
+                        }
+                        
                         if (isFirstPlayerTurn)
                         {
                             PlayerManagement.Player1.Score += 1;
@@ -447,6 +560,7 @@ public class DrawLine : MonoBehaviour
         }
         if (anyBoxDrawn)
         {
+            newBoxDrawn = true;
             isFirstPlayerTurn = !isFirstPlayerTurn;
         }
         if((PlayerManagement.Player1.Score + PlayerManagement.Player2.Score) >= TotalBox)

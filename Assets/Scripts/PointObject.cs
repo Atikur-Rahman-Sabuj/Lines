@@ -1,4 +1,5 @@
-﻿using System.Collections;
+﻿using Photon.Pun;
+using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
@@ -36,16 +37,29 @@ public class PointObject : MonoBehaviour
         IsDraging = true;
         lineToDraw = null;
         Script = GameObject.Find("script");
-        if (Script.GetComponent<DrawLine>().isFirstPlayerTurn)
+        if (Script.GetComponent<DrawLine>().IsPlayingOnline)
         {
-            Debug.Log("set color");
-            LineRenderer.GetComponent<LineRenderer>().GetComponent<Renderer>().material.SetColor("_EmissionColor", Script.GetComponent<DrawLine>().PlayerManagement.Player1.Color);
+            if (PhotonNetwork.IsMasterClient)
+            {
+                LineRenderer.GetComponent<LineRenderer>().GetComponent<Renderer>().material.SetColor("_EmissionColor", Script.GetComponent<DrawLine>().PlayerManagement.Player1.Color);
+            }
+            else
+            {
+                LineRenderer.GetComponent<LineRenderer>().GetComponent<Renderer>().material.SetColor("_EmissionColor", Script.GetComponent<DrawLine>().PlayerManagement.Player2.Color);
+            }
         }
         else
         {
-            Debug.Log("set color");
-            LineRenderer.GetComponent<LineRenderer>().GetComponent<Renderer>().material.SetColor("_EmissionColor", Script.GetComponent<DrawLine>().PlayerManagement.Player2.Color);
+            if (Script.GetComponent<DrawLine>().isFirstPlayerTurn)
+            {
+                LineRenderer.GetComponent<LineRenderer>().GetComponent<Renderer>().material.SetColor("_EmissionColor", Script.GetComponent<DrawLine>().PlayerManagement.Player1.Color);
+            }
+            else
+            {
+                LineRenderer.GetComponent<LineRenderer>().GetComponent<Renderer>().material.SetColor("_EmissionColor", Script.GetComponent<DrawLine>().PlayerManagement.Player2.Color);
+            }
         }
+        
         Script = GameObject.Find("script");
         Vector3 endPosition = Camera.main.ScreenToWorldPoint(Input.mousePosition);
         endPosition.z = 0;

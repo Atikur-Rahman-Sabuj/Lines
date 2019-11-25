@@ -40,10 +40,11 @@ public class GameManager : MonoBehaviourPunCallbacks
     {
         LocalPlayer.OnSendDataButtonClick();
     }
-    public void OnTurnComplete()
+    public void OnTurnComplete(Vector3 startPoint, Vector3 endPoint, bool turn)
     {
-        LocalPlayer.TurnChange();
-        Turn = false;
+
+        LocalPlayer.TurnChange( startPoint, endPoint, turn);
+        Turn = turn;
     }
     // Update is called once per frame
     void Update()

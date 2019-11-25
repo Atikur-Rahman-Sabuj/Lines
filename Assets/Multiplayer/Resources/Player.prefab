@@ -46,6 +46,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   ShowGotData: {fileID: 0}
   GameManager: {fileID: 0}
+  Script: {fileID: 0}
 --- !u!114 &8969554791702856078
 MonoBehaviour:
   m_ObjectHideFlags: 0

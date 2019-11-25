@@ -8,6 +8,7 @@ public class Player : MonoBehaviourPun
 {
     public GameObject ShowGotData;
     public GameObject GameManager;
+    public GameObject Script;
     System.Random rnd;
 
     private void Awake()
@@ -25,6 +26,8 @@ public class Player : MonoBehaviourPun
         rnd = new System.Random();
         ShowGotData = GameObject.Find("GotData");
         GameManager = GameObject.Find("GameManager");
+        Script = GameObject.Find("script");
+
     }
 
 
@@ -85,22 +88,25 @@ public class Player : MonoBehaviourPun
         //PhotonNetwork.LocalPlayer.CustomProperties.Add("state", "dead");
         //access by: PhotonNetwork.PlayerListOthers[0].CustomProperties["state"]
     } 
-    public void TurnChange()
+    public void TurnChange(Vector3 startPoint, Vector3 endPoint, bool turn)
     {
         Debug.Log(photonView.ViewID);
         //Remote Procedure call
-        photonView.RPC("ChangeTurn", RpcTarget.All, photonView.ViewID);
+        photonView.RPC("ChangeTurn", RpcTarget.All, photonView.ViewID, startPoint, endPoint, turn);
     }
 
     [PunRPC]
-    void ChangeTurn(int senderViewId,PhotonMessageInfo info)
+    void ChangeTurn(int senderViewId, Vector3 startPoint, Vector3 endPoint, bool turn, PhotonMessageInfo info)
     {
         Debug.Log(senderViewId.ToString() + "   " + photonView.ViewID);
         Debug.Log(photonView.IsMine);
 
         if (!photonView.IsMine)
         {
-            GameManager.GetComponent<GameManager>().Turn = true;
+            Debug.Log("Whats my turn: "+ !turn);
+            //reflect players turn to other player view
+            Script.GetComponent<DrawLine>().ReflectOtherNetworkPlayerTurn(startPoint, endPoint, !PhotonNetwork.IsMasterClient);
+            GameManager.GetComponent<GameManager>().Turn = !turn;
         }
 
         //Properties
