@@ -9,6 +9,8 @@ public class Player : MonoBehaviourPun
     public GameObject ShowGotData;
     public GameObject GameManager;
     public GameObject Script;
+    public int OwnScore;
+    public int OpponentScore;
     System.Random rnd;
 
     private void Awake()
@@ -107,6 +109,34 @@ public class Player : MonoBehaviourPun
             //reflect players turn to other player view
             Script.GetComponent<DrawLine>().ReflectOtherNetworkPlayerTurn(startPoint, endPoint, !PhotonNetwork.IsMasterClient);
             GameManager.GetComponent<GameManager>().Turn = !turn;
+        }
+
+        //Properties
+        //PhotonNetwork.LocalPlayer.CustomProperties.Add("state", "dead");
+        //access by: PhotonNetwork.PlayerListOthers[0].CustomProperties["state"]
+    }
+
+    public void IncrementScore()
+    {
+        Debug.Log(photonView.ViewID);
+        OwnScore++;
+        GameManager.GetComponent<GameManager>().OnOwnScoreUpdate(OwnScore);
+        //Remote Procedure call
+        photonView.RPC("OponentIncrementScore", RpcTarget.All, photonView.ViewID, OwnScore);
+    }
+
+    [PunRPC]
+    void OponentIncrementScore(int senderViewId, int opponentScore, PhotonMessageInfo info)
+    {
+        Debug.Log(opponentScore);
+        Debug.Log(senderViewId.ToString() + "   " + photonView.ViewID);
+        Debug.Log(photonView.IsMine);
+
+        if (!photonView.IsMine)
+        {
+
+            OpponentScore = opponentScore;
+            GameManager.GetComponent<GameManager>().OnOpponentScoreUpdate(OpponentScore);
         }
 
         //Properties

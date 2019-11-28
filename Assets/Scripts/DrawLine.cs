@@ -191,12 +191,17 @@ public class DrawLine : MonoBehaviour
         GlobalBoxObject.GetComponent<Transform>().localScale = new Vector3(PointDistance - 1, PointDistance - 1);
         PlayerManagement = gameObject.GetComponent<PlayerManagement>();
         PlayerManagement.SetPlayers();
-        PlayerLabel1.GetComponent<TextMeshProUGUI>().SetText(PlayerManagement.Player1.Name);
-        PlayerLabel2.GetComponent<TextMeshProUGUI>().SetText(PlayerManagement.Player2.Name);
-        PlayerScore1.GetComponent<TextMeshProUGUI>().SetText("0");
-        PlayerScore2.GetComponent<TextMeshProUGUI>().SetText("0");
-        Score.GetComponent<TextMeshProUGUI>().SetText("");
-        Turn.GetComponent<TextMeshProUGUI>().SetText("First player turn");
+        if (!IsPlayingOnline)
+        {
+            PlayerLabel1.GetComponent<TextMeshProUGUI>().SetText(PlayerManagement.Player1.Name);
+            PlayerLabel2.GetComponent<TextMeshProUGUI>().SetText(PlayerManagement.Player2.Name);
+            PlayerScore1.GetComponent<TextMeshProUGUI>().SetText("0");
+            PlayerScore2.GetComponent<TextMeshProUGUI>().SetText("0");
+            Score.GetComponent<TextMeshProUGUI>().SetText("");
+            Turn.GetComponent<TextMeshProUGUI>().SetText("First player turn");
+        }
+        
+        
         TotalPoints = TotalPointInEachSide * TotalPointInEachSide;
         TotalLines = (TotalPointInEachSide * (TotalPointInEachSide - 1)) * 2;
         TotalBox = (TotalPointInEachSide - 1) * (TotalPointInEachSide - 1);
@@ -465,16 +470,6 @@ public class DrawLine : MonoBehaviour
                     if (Boxes[i][j].CanDrawBox() && !Boxes[i][j].IsDrawn)
                     {
                         Boxes[i][j].DrawBox(isAdminPlayer, PlayerManagement);
-                        if (isFirstPlayerTurn)
-                        {
-                            PlayerManagement.Player1.Score += 1;
-                            PlayerScore1.GetComponent<TextMeshProUGUI>().SetText(PlayerManagement.Player1.Score.ToString());
-                        }
-                        else
-                        {
-                            PlayerManagement.Player2.Score += 1;
-                            PlayerScore2.GetComponent<TextMeshProUGUI>().SetText(PlayerManagement.Player2.Score.ToString());
-                        }
                     }
                 }
             }
@@ -498,8 +493,6 @@ public class DrawLine : MonoBehaviour
         if (IsPlayingOnline)
         {
             GameManager.GetComponent<GameManager>().OnTurnComplete(line.StartPoint.Position, line.EndPoint.Position, newBoxDrawn);
-
-
             return;
         }
 
@@ -542,17 +535,16 @@ public class DrawLine : MonoBehaviour
                         else
                         {
                             Boxes[i][j].DrawBox(isFirstPlayerTurn, PlayerManagement);
-                        }
-                        
-                        if (isFirstPlayerTurn)
-                        {
-                            PlayerManagement.Player1.Score += 1;
-                            PlayerScore1.GetComponent<TextMeshProUGUI>().SetText(PlayerManagement.Player1.Score.ToString());
-                        }
-                        else
-                        {
-                            PlayerManagement.Player2.Score += 1;
-                            PlayerScore2.GetComponent<TextMeshProUGUI>().SetText(PlayerManagement.Player2.Score.ToString());
+                            if (isFirstPlayerTurn)
+                            {
+                                PlayerManagement.Player1.Score += 1;
+                                PlayerScore1.GetComponent<TextMeshProUGUI>().SetText(PlayerManagement.Player1.Score.ToString());
+                            }
+                            else
+                            {
+                                PlayerManagement.Player2.Score += 1;
+                                PlayerScore2.GetComponent<TextMeshProUGUI>().SetText(PlayerManagement.Player2.Score.ToString());
+                            }
                         }
                     }
                 }
@@ -561,8 +553,10 @@ public class DrawLine : MonoBehaviour
         if (anyBoxDrawn)
         {
             newBoxDrawn = true;
+            GameManager.GetComponent<GameManager>().IncrementScoreForBoxDrawn();
             isFirstPlayerTurn = !isFirstPlayerTurn;
         }
+        if (IsPlayingOnline) return;
         if((PlayerManagement.Player1.Score + PlayerManagement.Player2.Score) >= TotalBox)
         {
             if(PlayerManagement.Player1.Score> PlayerManagement.Player2.Score)

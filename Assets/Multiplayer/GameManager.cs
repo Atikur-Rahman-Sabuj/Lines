@@ -4,13 +4,19 @@ using UnityEngine;
 using Photon.Pun;
 using Photon.Realtime;
 using UnityEngine.SceneManagement;
+using System;
+using TMPro;
 
 public class GameManager : MonoBehaviourPunCallbacks
 {
     [Header("UC Game Manager")]
 
     public Player PlayerPrefab;
-
+    [Header("UI")]
+    public GameObject PlayerLabel1;
+    public GameObject PlayerLabel2;
+    public GameObject PlayerScore1;
+    public GameObject PlayerScore2;
     [HideInInspector]
     public Player LocalPlayer;
     public bool Turn;
@@ -26,6 +32,10 @@ public class GameManager : MonoBehaviourPunCallbacks
     // Use this for initialization
     void Start()
     {
+        TmProSetText(PlayerLabel1, "Me");
+        TmProSetText(PlayerLabel2, "Opponent");
+        TmProSetText(PlayerScore1, "0");
+        TmProSetText(PlayerScore2, "0");
         if (PhotonNetwork.IsMasterClient)
         {
             Turn = true;
@@ -73,5 +83,22 @@ public class GameManager : MonoBehaviourPunCallbacks
         base.OnDisconnected(cause);
         Debug.Log(cause);
         SceneManager.LoadScene("MultiplayeJoin");
+    }
+    public void IncrementScoreForBoxDrawn()
+    {
+        LocalPlayer.GetComponent<Player>().IncrementScore();
+    }
+    public void OnOpponentScoreUpdate(int opponentScore)
+    {
+        TmProSetText(PlayerScore2, opponentScore.ToString());
+    }
+
+    public void OnOwnScoreUpdate(int ownScore)
+    {
+        TmProSetText(PlayerScore1, ownScore.ToString());
+    }
+    void TmProSetText(GameObject gameObject, string value)
+    {
+        gameObject.GetComponent<TextMeshProUGUI>().SetText(value);
     }
 }

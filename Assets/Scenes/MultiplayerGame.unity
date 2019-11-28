@@ -435,6 +435,10 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   PlayerPrefab: {fileID: 3503856861275678045, guid: 4a01565361a5fd34bb660332543846c3,
     type: 3}
+  PlayerLabel1: {fileID: 1086423639}
+  PlayerLabel2: {fileID: 305643830}
+  PlayerScore1: {fileID: 824093350}
+  PlayerScore2: {fileID: 1255897057}
   LocalPlayer: {fileID: 0}
   Turn: 0
 --- !u!4 &204583682
