@@ -20,7 +20,7 @@ public class DrawLine : MonoBehaviour
     private int TotalBox;
     private String STotalPointInEachSide  = "totalpointineachside";
     public PlayerManagement PlayerManagement;
-    public Boolean IsPlayingWithComputer;
+    public Boolean IsPlayingWithMobile;
     [Header("For online")]
     public Boolean IsPlayingOnline;
     public GameManager GameManager;
@@ -182,15 +182,13 @@ public class DrawLine : MonoBehaviour
     public List<List<Box>> Boxes = new List<List<Box>>();
     void Start()
     {
-        IsPlayingWithComputer = false;
-        IsPlayingOnline = true;
         Debug.Log(PlayerPrefs.HasKey(STotalPointInEachSide)); 
-        TotalPointInEachSide = PlayerPrefs.GetInt(STotalPointInEachSide, 6);
+        TotalPointInEachSide = PlayerPrefs.GetInt(GetComponent<Constants>().TOTALPOINTS, 6);
         Debug.Log(TotalPointInEachSide.ToString());
         PointDistance = (10*1.0f) / ((TotalPointInEachSide * 1.0f) - 1);
         GlobalBoxObject.GetComponent<Transform>().localScale = new Vector3(PointDistance - 1, PointDistance - 1);
         PlayerManagement = gameObject.GetComponent<PlayerManagement>();
-        PlayerManagement.SetPlayers();
+        PlayerManagement.SetPlayers( IsPlayingWithMobile);
         if (!IsPlayingOnline)
         {
             PlayerLabel1.GetComponent<TextMeshProUGUI>().SetText(PlayerManagement.Player1.Name);
@@ -386,7 +384,7 @@ public class DrawLine : MonoBehaviour
         }
         else
         {
-            if (IsPlayingWithComputer)
+            if (IsPlayingWithMobile)
             {
                 ComputerTurn();
                 Turn.GetComponent<TextMeshProUGUI>().SetText("Computer turn");
@@ -503,7 +501,7 @@ public class DrawLine : MonoBehaviour
         }
         else
         {
-            if (IsPlayingWithComputer)
+            if (IsPlayingWithMobile)
             {
                 ComputerTurn();
                 Turn.GetComponent<TextMeshProUGUI>().SetText("Computer turn");

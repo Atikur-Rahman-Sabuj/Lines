@@ -19,10 +19,32 @@ public class PlayerManagement : MonoBehaviour
     public Player Player1;
     public Player Player2;
 
-
-    public void SetPlayers()
+    public void SetPlayers(bool isPlayingWithMobile)
     {
-        Player1 = new Player("Player1", Color.yellow);
-        Player2 = new Player("Player2", Color.cyan);
+        if (isPlayingWithMobile)
+        {
+            SetMobileGamePlayer();
+        }
+        else
+        {
+            SetFrienGamePlayers();
+        }
+    }
+    public void SetFrienGamePlayers()
+    {
+        string name1 = PlayerPrefs.GetString(GetComponent<Constants>().FRIENDGAMEPLAYERNAME1, "Player 1");
+        string name2 = PlayerPrefs.GetString(GetComponent<Constants>().FRIENDGAMEPLAYERNAME2, "Player 2");
+
+        Player1 = new Player(name1, Color.yellow);
+        Player2 = new Player(name2, Color.cyan);
+    }
+
+    public void SetMobileGamePlayer()
+    {
+        string name1 = PlayerPrefs.GetString(GetComponent<Constants>().MOBILEGAMEPLAYERNAME, "Player 1");
+        string name2 ="Mobile";
+
+        Player1 = new Player(name1, Color.yellow);
+        Player2 = new Player(name2, Color.cyan);
     }
 }

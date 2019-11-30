@@ -102,7 +102,6 @@ public class PointObject : MonoBehaviour
         }
         Debug.Log("Adjacent Lines : "+ adjacentLines.Count);
         bool allLineDrawn = true;
-        bool foundClippingPoint = false;
         for (int i = 0; i < adjacentLines.Count; i++)
         {
             if (!adjacentLines[i].IsDrawn)
@@ -122,7 +121,6 @@ public class PointObject : MonoBehaviour
                 {
                 
                     Debug.Log("Inside here : ");
-                    foundClippingPoint = true;
                     lineToDraw = adjacentLines[i];
                     endPosition = position;
                     break;

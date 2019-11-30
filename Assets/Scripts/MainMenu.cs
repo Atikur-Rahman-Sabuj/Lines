@@ -2,11 +2,86 @@
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.SceneManagement;
+using TMPro;
 
 public class MainMenu : MonoBehaviour
 {
+    [Header("Canvases")]
+    public GameObject MainCanvas;
+    public GameObject PlayWithMobileCanvas;
+    public GameObject PlayWithFriendCanvas;
+
+    [Header("Inputs")]
+    public TMP_InputField InputMobilePlayer;
+    public TMP_InputField InputFriendPlayer1;
+    public TMP_InputField InputFriendPlayer2;
+
+    private Constants constans;
+
+    private void Start()
+    {
+        constans = GetComponent<Constants>();
+        InputMobilePlayer.text = PlayerPrefs.GetString(constans.MOBILEGAMEPLAYERNAME, "");
+        InputFriendPlayer1.text = PlayerPrefs.GetString(constans.FRIENDGAMEPLAYERNAME1, "");
+        InputFriendPlayer2.text = PlayerPrefs.GetString(constans.FRIENDGAMEPLAYERNAME2, "");
+    }
+
+    public void OnPlayWithMobileClick()
+    {
+        MainCanvas.SetActive(false);
+        PlayWithMobileCanvas.SetActive(true);
+    }
+    public void OnPlayWithFriend()
+    {
+        MainCanvas.SetActive(false);
+        PlayWithFriendCanvas.SetActive(true);
+    }
+
+    public void OnHomeClick()
+    {
+        PlayWithMobileCanvas.SetActive(false);
+        PlayWithFriendCanvas.SetActive(false);
+        MainCanvas.SetActive(true);
+    }
+
+
     public void OnPlayOnlineClick()
     {
         SceneManager.LoadScene("MultiplayeJoin");
+    }
+
+    public void OnPlayMobileSixClick()
+    {
+        string name = InputMobilePlayer.text;
+
+        PlayerPrefs.SetString(GetComponent<Constants>().MOBILEGAMEPLAYERNAME, name);
+        PlayerPrefs.SetInt(GetComponent<Constants>().TOTALPOINTS, 6);
+    }
+    public void OnPlayMobileEightClick()
+    {
+        string name = InputMobilePlayer.text;
+
+        PlayerPrefs.SetString(GetComponent<Constants>().MOBILEGAMEPLAYERNAME, name);
+        PlayerPrefs.SetInt(GetComponent<Constants>().TOTALPOINTS, 8);
+    }
+    public void OnPlayFriendSixClick()
+    {
+        string name1 =  InputFriendPlayer1.text;
+        string name2 = InputFriendPlayer2.text;
+
+        PlayerPrefs.SetString(GetComponent<Constants>().FRIENDGAMEPLAYERNAME1, name1);
+        PlayerPrefs.SetString(GetComponent<Constants>().FRIENDGAMEPLAYERNAME2, name2);
+        PlayerPrefs.SetInt(GetComponent<Constants>().TOTALPOINTS, 6);
+        SceneManager.LoadScene("PlayFriend");
+    }
+    public void OnPlayFriendEightClick()
+    {
+        string name1 = InputFriendPlayer1.text;
+        string name2 = InputFriendPlayer2.text;
+
+        PlayerPrefs.SetString(GetComponent<Constants>().FRIENDGAMEPLAYERNAME1, name1);
+        PlayerPrefs.SetString(GetComponent<Constants>().FRIENDGAMEPLAYERNAME2, name2);
+        PlayerPrefs.SetInt(GetComponent<Constants>().TOTALPOINTS, 8);
+        SceneManager.LoadScene("PlayFriend");
     }
 }
