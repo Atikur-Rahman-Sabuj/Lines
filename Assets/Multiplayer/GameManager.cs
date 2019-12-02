@@ -82,7 +82,7 @@ public class GameManager : MonoBehaviourPunCallbacks
     {
         base.OnDisconnected(cause);
         Debug.Log(cause);
-        SceneManager.LoadScene("MultiplayeJoin");
+        SceneManager.LoadScene("OnlineLobby");
     }
     public void IncrementScoreForBoxDrawn()
     {

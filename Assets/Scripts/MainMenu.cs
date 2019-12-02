@@ -10,11 +10,13 @@ public class MainMenu : MonoBehaviour
     public GameObject MainCanvas;
     public GameObject PlayWithMobileCanvas;
     public GameObject PlayWithFriendCanvas;
+    public GameObject PlayOnlineCanvas;
 
     [Header("Inputs")]
     public TMP_InputField InputMobilePlayer;
     public TMP_InputField InputFriendPlayer1;
     public TMP_InputField InputFriendPlayer2;
+    public TMP_InputField InputOnlinePlayer;
 
     private Constants constans;
 
@@ -24,6 +26,7 @@ public class MainMenu : MonoBehaviour
         InputMobilePlayer.text = PlayerPrefs.GetString(constans.MOBILEGAMEPLAYERNAME, "");
         InputFriendPlayer1.text = PlayerPrefs.GetString(constans.FRIENDGAMEPLAYERNAME1, "");
         InputFriendPlayer2.text = PlayerPrefs.GetString(constans.FRIENDGAMEPLAYERNAME2, "");
+        InputOnlinePlayer.text = PlayerPrefs.GetString(constans.ONLINEGAMEPLAYERNAME, "");
     }
 
     public void OnPlayWithMobileClick()
@@ -41,21 +44,38 @@ public class MainMenu : MonoBehaviour
     {
         PlayWithMobileCanvas.SetActive(false);
         PlayWithFriendCanvas.SetActive(false);
+        PlayOnlineCanvas.SetActive(false);
         MainCanvas.SetActive(true);
     }
 
 
     public void OnPlayOnlineClick()
     {
-        SceneManager.LoadScene("MultiplayeJoin");
+        MainCanvas.SetActive(false);
+        PlayOnlineCanvas.SetActive(true);
+    }   
+    public void OnOnlinePlayRandomClick()
+    {
+        string name = InputOnlinePlayer.text;
+        PlayerPrefs.SetString(GetComponent<Constants>().ONLINEGAMEPLAYERNAME, name);
+        PlayerPrefs.SetInt(GetComponent<Constants>().TOTALPOINTS, 7);
+        SceneManager.LoadScene("OnlinePlayRandomLobby");
     }
+    public void OnOnlinePlayWithFriendClick()
+    {
+        string name = InputOnlinePlayer.text;
+        PlayerPrefs.SetString(GetComponent<Constants>().ONLINEGAMEPLAYERNAME, name);
+        PlayerPrefs.SetInt(GetComponent<Constants>().TOTALPOINTS, 7);
+        SceneManager.LoadScene("PlayMobile");
 
+    }
     public void OnPlayMobileSixClick()
     {
         string name = InputMobilePlayer.text;
 
         PlayerPrefs.SetString(GetComponent<Constants>().MOBILEGAMEPLAYERNAME, name);
         PlayerPrefs.SetInt(GetComponent<Constants>().TOTALPOINTS, 6);
+        SceneManager.LoadScene("PlayMobile");
     }
     public void OnPlayMobileEightClick()
     {
@@ -63,6 +83,7 @@ public class MainMenu : MonoBehaviour
 
         PlayerPrefs.SetString(GetComponent<Constants>().MOBILEGAMEPLAYERNAME, name);
         PlayerPrefs.SetInt(GetComponent<Constants>().TOTALPOINTS, 8);
+        SceneManager.LoadScene("PlayMobile");
     }
     public void OnPlayFriendSixClick()
     {
@@ -84,4 +105,6 @@ public class MainMenu : MonoBehaviour
         PlayerPrefs.SetInt(GetComponent<Constants>().TOTALPOINTS, 8);
         SceneManager.LoadScene("PlayFriend");
     }
+
+    
 }

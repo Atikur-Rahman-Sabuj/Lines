@@ -551,7 +551,8 @@ public class DrawLine : MonoBehaviour
         if (anyBoxDrawn)
         {
             newBoxDrawn = true;
-            GameManager.GetComponent<GameManager>().IncrementScoreForBoxDrawn();
+            if(IsPlayingOnline)
+                GameManager.GetComponent<GameManager>().IncrementScoreForBoxDrawn();
             isFirstPlayerTurn = !isFirstPlayerTurn;
         }
         if (IsPlayingOnline) return;

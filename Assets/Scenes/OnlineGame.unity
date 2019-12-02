@@ -3291,6 +3291,7 @@ GameObject:
   - component: {fileID: 1736526545}
   - component: {fileID: 1736526544}
   - component: {fileID: 1736526543}
+  - component: {fileID: 1736526546}
   m_Layer: 0
   m_Name: script
   m_TagString: Untagged
@@ -3331,7 +3332,7 @@ MonoBehaviour:
   GlobalBoxObject: {fileID: 7545001365670932135, guid: 01bb45d4ddd56954a8d88fd6579b942f,
     type: 3}
   PlayerManagement: {fileID: 1736526543}
-  IsPlayingWithComputer: 0
+  IsPlayingWithMobile: 0
   IsPlayingOnline: 1
   GameManager: {fileID: 204583681}
   PlayerLabel1: {fileID: 1086423639}
@@ -3359,6 +3360,23 @@ Transform:
   m_Father: {fileID: 0}
   m_RootOrder: 9
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &1736526546
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1736526542}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 9eeab976490d7cc43801247b28d5d170, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  MOBILEGAMEPLAYERNAME: mobilegameplayername
+  FRIENDGAMEPLAYERNAME1: friendgameplayername1
+  FRIENDGAMEPLAYERNAME2: friendgameplayername2
+  ONLINEGAMEPLAYERNAME: onlinegameplayername
+  TOTALPOINTS: totapoints
 --- !u!1 &1838622058
 GameObject:
   m_ObjectHideFlags: 0

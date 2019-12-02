@@ -22,6 +22,11 @@ public class NetworkConnectionManager : MonoBehaviourPunCallbacks
         TriesToConnectToRoom = false;
     }
 
+    void OnHomeClick()
+    {
+        SceneManager.LoadScene("MainMenu");
+    }
+
     // Update is called once per frame
     void Update()
     {
@@ -86,7 +91,7 @@ public class NetworkConnectionManager : MonoBehaviourPunCallbacks
         Debug.Log("Room join fail message: " + message);
         //no room available
         //create a room (null as a name means "does not matter")
-        PhotonNetwork.CreateRoom(null, new RoomOptions { MaxPlayers = 2 });
+        PhotonNetwork.CreateRoom(null, new RoomOptions { MaxPlayers = 2,  });
     }
 
     public override void OnCreateRoomFailed(short returnCode, string message)
@@ -104,7 +109,7 @@ public class NetworkConnectionManager : MonoBehaviourPunCallbacks
             TriesToConnectToRoom = false;
             Debug.Log("test");
             Debug.Log("Master: " + PhotonNetwork.IsMasterClient + " | Players In Room: " + PhotonNetwork.CurrentRoom.PlayerCount + " | RoomName: " + PhotonNetwork.CurrentRoom.Name);
-            SceneManager.LoadScene("MultiplayerGame");
+            SceneManager.LoadScene("OnlineGame");
         }
         
     }

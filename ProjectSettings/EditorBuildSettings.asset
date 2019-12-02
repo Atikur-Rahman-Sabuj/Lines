@@ -20,4 +20,7 @@ EditorBuildSettings:
   - enabled: 1
     path: Assets/Scenes/PlayMobile.unity
     guid: b06fbf6ab4b9a9c419d8acd6c94354c6
+  - enabled: 1
+    path: Assets/Scenes/OnlinePlayRandomLobby.unity
+    guid: f70476329584f3b4c8b4ce0479594d33
   m_configObjects: {}

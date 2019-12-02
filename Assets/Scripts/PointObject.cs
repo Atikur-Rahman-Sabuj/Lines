@@ -115,9 +115,8 @@ public class PointObject : MonoBehaviour
                 }
                 Vector3 position = otherPoint.Position;
                 position.z = 0;
-                //Debug.Log(otherPoint.PointObject.GetComponent<Transform>().position + "   " + endPosition);
-                //Debug.Log(Vector3.Distance(otherPoint.PointObject.GetComponent<Transform>().position, endPosition));
-                if (Vector3.Distance(position, endPosition) < 2)
+
+                if (Vector3.Distance(position, endPosition) < 1)
                 {
                 
                     Debug.Log("Inside here : ");
