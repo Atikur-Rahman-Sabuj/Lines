@@ -20,6 +20,8 @@ public class GameManager : MonoBehaviourPunCallbacks
     [HideInInspector]
     public Player LocalPlayer;
     public bool Turn;
+    private String PlayerName;
+    private String OpponentName;
     private void Awake()
     {
         if (!PhotonNetwork.IsConnected)
@@ -32,8 +34,14 @@ public class GameManager : MonoBehaviourPunCallbacks
     // Use this for initialization
     void Start()
     {
-        TmProSetText(PlayerLabel1, "Me");
-        TmProSetText(PlayerLabel2, "Opponent");
+        PlayerName = PlayerPrefs.GetString(GetComponent<Constants>().ONLINEGAMEPLAYERNAME, "");
+        PlayerName = PlayerName == "" ? "Me" : PlayerName;
+
+        OpponentName = PlayerPrefs.GetString(GetComponent<Constants>().ONLINEGAMEOPPONENTPLAYERNAME, "");
+        OpponentName = OpponentName == "" ? "Opponent" : OpponentName;
+
+        TmProSetText(PlayerLabel1, PlayerName);
+        TmProSetText(PlayerLabel2, OpponentName);
         TmProSetText(PlayerScore1, "0");
         TmProSetText(PlayerScore2, "0");
         if (PhotonNetwork.IsMasterClient)
@@ -46,6 +54,9 @@ public class GameManager : MonoBehaviourPunCallbacks
         }
         Player.RefreshInstance(ref LocalPlayer, PlayerPrefab);
     }
+   
+    
+    
     public void onClickButtonSendData()
     {
         LocalPlayer.OnSendDataButtonClick();
@@ -65,6 +76,7 @@ public class GameManager : MonoBehaviourPunCallbacks
     public override void OnPlayerEnteredRoom(Photon.Realtime.Player newPlayer)
     {
         Player.RefreshInstance(ref LocalPlayer, PlayerPrefab);
+        Debug.Log("OnPlayerEnterRoom");
     }
     public void OnLeaveRoomButtonClick()
     {
@@ -82,7 +94,7 @@ public class GameManager : MonoBehaviourPunCallbacks
     {
         base.OnDisconnected(cause);
         Debug.Log(cause);
-        SceneManager.LoadScene("OnlineLobby");
+        SceneManager.LoadScene("MainMenu");
     }
     public void IncrementScoreForBoxDrawn()
     {

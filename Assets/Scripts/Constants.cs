@@ -13,5 +13,7 @@ public class Constants : MonoBehaviour
     [HideInInspector]
     public string ONLINEGAMEPLAYERNAME = "onlinegameplayername";
     [HideInInspector]
+    public string ONLINEGAMEOPPONENTPLAYERNAME = "onlinegameopponentplayername";
+    [HideInInspector]
     public string TOTALPOINTS = "totapoints";
 }
