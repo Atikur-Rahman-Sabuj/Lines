@@ -58,9 +58,28 @@ public class PlayRandomConnectionManager : MonoBehaviourPunCallbacks
 
     public void OnHomeClick()
     {
+        if (PhotonNetwork.InRoom)
+        PhotonNetwork.LeaveRoom();
+        if(PhotonNetwork.IsConnected)
+        PhotonNetwork.Disconnect();
         SceneManager.LoadScene("MainMenu");
     }
+    public void OnTryAgainClick()
+    {
+        counter = 0;
+        isWaitingForPlayer = false;
+        LoadingPanel.SetActive(true);
+        NotLoadingPanel.SetActive(false);
+        try
+        {
+            PhotonNetwork.ConnectUsingSettings();
+        }
+        catch (System.Exception e)
+        {
 
+            Debug.Log(e.Message);
+        }
+    }
     public override void OnConnectedToMaster()
     {
         base.OnConnectedToMaster();

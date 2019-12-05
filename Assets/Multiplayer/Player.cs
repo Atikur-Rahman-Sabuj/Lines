@@ -9,8 +9,7 @@ public class Player : MonoBehaviourPun
     public GameObject ShowGotData;
     public GameObject GameManager;
     public GameObject Script;
-    public int OwnScore;
-    public int OpponentScore;
+
     System.Random rnd;
 
     private void Awake()
@@ -25,6 +24,7 @@ public class Player : MonoBehaviourPun
     }
     private void Start()
     {
+        
         rnd = new System.Random();
         ShowGotData = GameObject.Find("GotData");
         GameManager = GameObject.Find("GameManager");
@@ -58,12 +58,11 @@ public class Player : MonoBehaviourPun
         var rotation = Quaternion.identity;
         if (player != null)
         {
-            position = player.transform.position;
-            rotation = player.transform.rotation;
             PhotonNetwork.Destroy(player.gameObject);
         }
 
         player = PhotonNetwork.Instantiate(Prefab.gameObject.name, position, rotation).GetComponent<Player>();
+
     }
 
 
@@ -119,28 +118,71 @@ public class Player : MonoBehaviourPun
     public void IncrementScore()
     {
         Debug.Log(photonView.ViewID);
-        OwnScore++;
-        GameManager.GetComponent<GameManager>().OnOwnScoreUpdate(OwnScore);
+        GameManager.GetComponent<GameManager>().OnOwnScoreUpdate();
+        photonView.RPC("OponentIncrementScore", RpcTarget.All, photonView.ViewID);
+       
         //Remote Procedure call
-        photonView.RPC("OponentIncrementScore", RpcTarget.All, photonView.ViewID, OwnScore);
+        
     }
 
     [PunRPC]
-    void OponentIncrementScore(int senderViewId, int opponentScore, PhotonMessageInfo info)
+    void OponentIncrementScore(int senderViewId, PhotonMessageInfo info)
     {
-        Debug.Log(opponentScore);
         Debug.Log(senderViewId.ToString() + "   " + photonView.ViewID);
-        Debug.Log(photonView.IsMine);
-
         if (!photonView.IsMine)
         {
 
-            OpponentScore = opponentScore;
-            GameManager.GetComponent<GameManager>().OnOpponentScoreUpdate(OpponentScore);
+            GameManager.GetComponent<GameManager>().OnOpponentScoreUpdate();
         }
 
         //Properties
         //PhotonNetwork.LocalPlayer.CustomProperties.Add("state", "dead");
         //access by: PhotonNetwork.PlayerListOthers[0].CustomProperties["state"]
+    }
+
+    public void PlayerLeftGame()
+    {
+        Debug.Log(photonView.ViewID);
+        //Remote Procedure call
+        photonView.RPC("OnOpponentLeftGame", RpcTarget.All, photonView.ViewID);
+    }
+
+    [PunRPC]
+    void OnOpponentLeftGame(int senderViewId, PhotonMessageInfo info)
+    {
+
+        if (!photonView.IsMine)
+        {
+            GameManager.GetComponent<GameManager>().OpponentLeftGamePanel.SetActive(true);
+        }
+    }
+
+    public void PlayAgainSendRequest()
+    {
+        photonView.RPC("PlayAgainGotRequest", RpcTarget.All, photonView.ViewID);
+    }
+
+    [PunRPC]
+    void PlayAgainGotRequest(int senderViewId, PhotonMessageInfo info)
+    {
+        if (!photonView.IsMine)
+        {
+            GameManager.GetComponent<GameManager>().OnPlayAgainReceiveRequest();
+        }
+    }
+    
+    public void PlayAgainAcceptedRequestConfirmationSend()
+    {
+
+        photonView.RPC("PlayAgainAcceptedConfirm", RpcTarget.All, photonView.ViewID);
+    }
+
+    [PunRPC]
+    void PlayAgainAcceptedConfirm(int senderViewId, PhotonMessageInfo info)
+    {
+        if (!photonView.IsMine)
+        {
+            GameManager.GetComponent<GameManager>().OnPlayAgainOpponentRequestAccepted();
+        }
     }
 }

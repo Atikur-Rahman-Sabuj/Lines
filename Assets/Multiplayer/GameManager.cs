@@ -17,23 +17,35 @@ public class GameManager : MonoBehaviourPunCallbacks
     public GameObject PlayerLabel2;
     public GameObject PlayerScore1;
     public GameObject PlayerScore2;
+    public GameObject GotoHomePanel;
+    public GameObject OpponentLeftGamePanel;
+    public GameObject WinPanel;
+    public GameObject LoosePanel;
+    public GameObject DrawPanel;
+    public GameObject PlayAgainPanel;
     [HideInInspector]
     public Player LocalPlayer;
     public bool Turn;
     private String PlayerName;
     private String OpponentName;
+    public int OwnScore;
+    public int OpponentScore;
+    public int TotalBox;
     private void Awake()
     {
-        if (!PhotonNetwork.IsConnected)
-        {
-            SceneManager.LoadScene("MultiplayeJoin");
-            return;
-        }
+        //if (!PhotonNetwork.IsConnected)
+        //{
+        //    SceneManager.LoadScene("MultiplayeJoin");
+        //    return;
+        //}
     }
 
     // Use this for initialization
     void Start()
     {
+        TotalBox = 4;
+        GotoHomePanel.SetActive(false);
+        OpponentLeftGamePanel.SetActive(false);
         PlayerName = PlayerPrefs.GetString(GetComponent<Constants>().ONLINEGAMEPLAYERNAME, "");
         PlayerName = PlayerName == "" ? "Me" : PlayerName;
 
@@ -78,7 +90,7 @@ public class GameManager : MonoBehaviourPunCallbacks
         Player.RefreshInstance(ref LocalPlayer, PlayerPrefab);
         Debug.Log("OnPlayerEnterRoom");
     }
-    public void OnLeaveRoomButtonClick()
+    public void LeaveRoom()
     {
         PhotonNetwork.LeaveRoom();
     }
@@ -88,7 +100,7 @@ public class GameManager : MonoBehaviourPunCallbacks
         Debug.Log("Left room");
         PhotonNetwork.Disconnect();
         
-        //SceneManager.LoadScene("MultiplayeJoin");
+        SceneManager.LoadScene("MainMenu");
     }
     public override void OnDisconnected(DisconnectCause cause)
     {
@@ -100,17 +112,88 @@ public class GameManager : MonoBehaviourPunCallbacks
     {
         LocalPlayer.GetComponent<Player>().IncrementScore();
     }
-    public void OnOpponentScoreUpdate(int opponentScore)
+    public void OnOpponentScoreUpdate()
     {
-        TmProSetText(PlayerScore2, opponentScore.ToString());
+        OpponentScore++;
+        TmProSetText(PlayerScore2, OpponentScore.ToString());
+        CheckResult();
     }
-
-    public void OnOwnScoreUpdate(int ownScore)
+    private void CheckResult()
     {
-        TmProSetText(PlayerScore1, ownScore.ToString());
+        if ((OwnScore + OpponentScore) >= TotalBox)
+        {
+            if (OwnScore > OpponentScore)
+            {
+                OnWin(OwnScore, OpponentScore);
+            }
+            else if (OwnScore < OpponentScore)
+            {
+                OnLoose(OwnScore, OpponentScore);
+            }
+            else
+            {
+                OnDraw(OwnScore, OpponentScore);
+            }
+        }
+    }
+    public void OnOwnScoreUpdate()
+    {
+        OwnScore++;
+        TmProSetText(PlayerScore1, OwnScore.ToString());
+        CheckResult();
+    }
+    public void OnWin(int ownScore, int opponentScore)
+    {
+        WinPanel.SetActive(true);
+    }
+    public void OnLoose(int ownScore, int opponenetScore)
+    {
+        LoosePanel.SetActive(true);
+    }
+    public void OnDraw(int ownScore, int opponenetScore)
+    {
+        DrawPanel.SetActive(true);
+    }
+    public void OnEndGameHomeClick()
+    {
+        SceneManager.LoadScene("MainMenu");
+    }
+    public void OnPlayAgainSendRequest()
+    {
+        LocalPlayer.PlayAgainSendRequest();
+    }
+    public void OnPlayAgainReceiveRequest()
+    {
+        PlayAgainPanel.SetActive(true);
+    }
+    public void OnPlayAgainAcceptRequest()
+    {
+        LocalPlayer.PlayAgainAcceptedRequestConfirmationSend();
+        SceneManager.LoadScene(SceneManager.GetActiveScene().name);
+    }
+    public void OnPlayAgainRequestDeclined()
+    {
+        PlayAgainPanel.SetActive(false);
+    }
+    public void OnPlayAgainOpponentRequestAccepted()
+    {
+        SceneManager.LoadScene(SceneManager.GetActiveScene().name);
     }
     void TmProSetText(GameObject gameObject, string value)
     {
         gameObject.GetComponent<TextMeshProUGUI>().SetText(value);
+    }
+    public void OnHomeButtonClick()
+    {
+        GotoHomePanel.SetActive(true);
+    }
+    public void OnHomeConfirm()
+    {
+        LocalPlayer.PlayerLeftGame();
+        PhotonNetwork.LeaveRoom();
+    }
+    public void OnGoHomeCancel()
+    {
+        GotoHomePanel.SetActive(false);
     }
 }

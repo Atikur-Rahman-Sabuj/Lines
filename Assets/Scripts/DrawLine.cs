@@ -529,6 +529,7 @@ public class DrawLine : MonoBehaviour
                         if (IsPlayingOnline)
                         {
                             Boxes[i][j].DrawBox(PhotonNetwork.IsMasterClient, PlayerManagement);
+                            GameManager.GetComponent<GameManager>().IncrementScoreForBoxDrawn();
                         }
                         else
                         {
@@ -551,8 +552,8 @@ public class DrawLine : MonoBehaviour
         if (anyBoxDrawn)
         {
             newBoxDrawn = true;
-            if(IsPlayingOnline)
-                GameManager.GetComponent<GameManager>().IncrementScoreForBoxDrawn();
+            //if(IsPlayingOnline)
+            //    GameManager.GetComponent<GameManager>().IncrementScoreForBoxDrawn();
             isFirstPlayerTurn = !isFirstPlayerTurn;
         }
         if (IsPlayingOnline) return;

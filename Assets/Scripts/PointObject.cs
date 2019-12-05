@@ -100,13 +100,11 @@ public class PointObject : MonoBehaviour
                 }
             }
         }
-        Debug.Log("Adjacent Lines : "+ adjacentLines.Count);
         bool allLineDrawn = true;
         for (int i = 0; i < adjacentLines.Count; i++)
         {
             if (!adjacentLines[i].IsDrawn)
             {
-                Debug.Log("Inside here : ");
                 allLineDrawn = false;
                 DrawLine.Point otherPoint = adjacentLines[i].StartPoint;
                 if(otherPoint == point)
@@ -118,8 +116,6 @@ public class PointObject : MonoBehaviour
 
                 if (Vector3.Distance(position, endPosition) < 1)
                 {
-                
-                    Debug.Log("Inside here : ");
                     lineToDraw = adjacentLines[i];
                     endPosition = position;
                     break;

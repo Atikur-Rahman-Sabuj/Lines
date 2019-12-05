@@ -58,14 +58,14 @@ public class MainMenu : MonoBehaviour
     {
         string name = InputOnlinePlayer.text;
         PlayerPrefs.SetString(GetComponent<Constants>().ONLINEGAMEPLAYERNAME, name);
-        PlayerPrefs.SetInt(GetComponent<Constants>().TOTALPOINTS, 7);
+        PlayerPrefs.SetInt(GetComponent<Constants>().TOTALPOINTS, 3);
         SceneManager.LoadScene("OnlinePlayRandomLobby");
     }
     public void OnOnlinePlayWithFriendClick()
     {
         string name = InputOnlinePlayer.text;
         PlayerPrefs.SetString(GetComponent<Constants>().ONLINEGAMEPLAYERNAME, name);
-        PlayerPrefs.SetInt(GetComponent<Constants>().TOTALPOINTS, 7);
+        PlayerPrefs.SetInt(GetComponent<Constants>().TOTALPOINTS, 3);
         SceneManager.LoadScene("PlayMobile");
 
     }
