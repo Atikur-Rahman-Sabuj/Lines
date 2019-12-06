@@ -90,6 +90,7 @@ public class DrawLine : MonoBehaviour
             {
                 LineObject.GetComponent<LineRenderer>().GetComponent<Renderer>().material.SetColor("_EmissionColor", playerManagement.Player2.Color);
             }
+            LineObject.GetComponent<Animator>().Play("LineFadeAndShow");
             
         }
         public Boolean IsThisLine(Point firstPoint, Point secondPoint)
@@ -143,6 +144,8 @@ public class DrawLine : MonoBehaviour
             {
                 BoxObject.GetComponent<Renderer>().material.SetColor("_EmissionColor", playerManagement.Player2.Color);
             }
+            
+            BoxObject.GetComponent<Animator>().Play("BoxAnimation");
         }
         public Boolean IsLineOfThisBox(Line line)
         {

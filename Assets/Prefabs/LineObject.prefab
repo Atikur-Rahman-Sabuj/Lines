@@ -11,6 +11,7 @@ GameObject:
   - component: {fileID: 4935537462537250995}
   - component: {fileID: 4935537462537250994}
   - component: {fileID: 4935537462537250992}
+  - component: {fileID: -1250002656295229693}
   m_Layer: 0
   m_Name: LineObject
   m_TagString: Untagged
@@ -72,7 +73,7 @@ LineRenderer:
   m_SortingOrder: 0
   m_Positions:
   - {x: 0, y: 0, z: 0}
-  - {x: 0, y: 0, z: 0}
+  - {x: 5, y: 0, z: 0}
   m_Parameters:
     serializedVersion: 3
     widthMultiplier: 1
@@ -140,3 +141,22 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 9e91609690c88b74fa6018f37c937482, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+--- !u!95 &-1250002656295229693
+Animator:
+  serializedVersion: 3
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4935537462537251005}
+  m_Enabled: 1
+  m_Avatar: {fileID: 0}
+  m_Controller: {fileID: 9100000, guid: b63a06998ecff0748a51961e9fdd6ff3, type: 2}
+  m_CullingMode: 0
+  m_UpdateMode: 0
+  m_ApplyRootMotion: 0
+  m_LinearVelocityBlending: 0
+  m_WarningMessage: 
+  m_HasTransformHierarchy: 1
+  m_AllowConstantClipSamplingOptimization: 1
+  m_KeepAnimatorControllerStateOnDisable: 0

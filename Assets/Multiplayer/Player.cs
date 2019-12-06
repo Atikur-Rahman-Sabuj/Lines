@@ -108,6 +108,7 @@ public class Player : MonoBehaviourPun
             //reflect players turn to other player view
             Script.GetComponent<DrawLine>().ReflectOtherNetworkPlayerTurn(startPoint, endPoint, !PhotonNetwork.IsMasterClient);
             GameManager.GetComponent<GameManager>().Turn = !turn;
+            GameManager.GetComponent<GameManager>().TurnText.GetComponent<Animator>().Play("TurnChange");
         }
 
         //Properties

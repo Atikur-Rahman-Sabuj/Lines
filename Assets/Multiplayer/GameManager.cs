@@ -17,6 +17,7 @@ public class GameManager : MonoBehaviourPunCallbacks
     public GameObject PlayerLabel2;
     public GameObject PlayerScore1;
     public GameObject PlayerScore2;
+    public GameObject TurnText;
     public GameObject GotoHomePanel;
     public GameObject OpponentLeftGamePanel;
     public GameObject WinPanel;
@@ -31,6 +32,7 @@ public class GameManager : MonoBehaviourPunCallbacks
     public int OwnScore;
     public int OpponentScore;
     public int TotalBox;
+
     private void Awake()
     {
         //if (!PhotonNetwork.IsConnected)
@@ -65,6 +67,8 @@ public class GameManager : MonoBehaviourPunCallbacks
             Turn = false;
         }
         Player.RefreshInstance(ref LocalPlayer, PlayerPrefab);
+        //TurnText.GetComponent<Animator>().SetBool("newTurn", true);
+        TurnText.GetComponent<Animator>().Play("TurnChange");
     }
    
     
@@ -78,11 +82,19 @@ public class GameManager : MonoBehaviourPunCallbacks
 
         LocalPlayer.TurnChange( startPoint, endPoint, turn);
         Turn = turn;
+        TurnText.GetComponent<Animator>().Play("TurnChange");
     }
     // Update is called once per frame
     void Update()
     {
-
+        if (Turn)
+        {
+            TmProSetText(TurnText, "Your turn");
+        }
+        else
+        {
+            TmProSetText(TurnText, OpponentName+"'s turn");
+        }
     }
 
     public override void OnPlayerEnteredRoom(Photon.Realtime.Player newPlayer)
