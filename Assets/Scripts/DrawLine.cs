@@ -211,8 +211,42 @@ public class DrawLine : MonoBehaviour
         DrawBoxes();
     }
 
+    public void OnlineRestart()
+    {
+        Points.ForEach(point => { 
+            point.ForEach(p => { 
+                GameObject.Destroy(p.PointObject); 
+            });
+        });
+        HorizontalLines.ForEach(lines =>
+        {
+            lines.ForEach(line =>
+            {
+                GameObject.Destroy(line.LineObject);
+            });
+        });
+        VerticalLines.ForEach(lines =>
+        {
+            lines.ForEach(line =>
+            {
+                GameObject.Destroy(line.LineObject);
+            });
+        });
+        Boxes.ForEach(boxes =>
+        {
+            boxes.ForEach(box =>
+            {
+                GameObject.Destroy(box.BoxObject);
+            });
+        });
+        DrawPoints();
+        DrawLines();
+        DrawBoxes();
+    }
+
     private void DrawBoxes()
     {
+        Boxes.Clear();
         for (int i = 0; i < TotalPointInEachSide - 1; i++)
         {
             List<Box> boxes = new List<Box>();
@@ -228,6 +262,8 @@ public class DrawLine : MonoBehaviour
 
     private void DrawLines()
     {
+        HorizontalLines.Clear();
+        VerticalLines.Clear();
         for(int i = 0; i<TotalPointInEachSide; i++)
         {
             List<Line> horizontalLines = new List<Line>();
@@ -249,6 +285,7 @@ public class DrawLine : MonoBehaviour
 
     private void DrawPoints()
     {
+        Points.Clear();
         float pointX = StartingPointX;
         float pointY = StartingPointY;
         for(int i = 0; i<TotalPointInEachSide; i++)

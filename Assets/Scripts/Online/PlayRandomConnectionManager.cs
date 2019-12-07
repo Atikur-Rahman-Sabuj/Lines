@@ -23,6 +23,7 @@ public class PlayRandomConnectionManager : MonoBehaviourPunCallbacks
         PlayerName = PlayerName == "" ? "Player" : PlayerName;
         PhotonNetwork.NickName = PlayerName;
         PhotonNetwork.GameVersion = "v1";
+        PhotonNetwork.AutomaticallySyncScene = true;
         try
         {
             PhotonNetwork.ConnectUsingSettings();

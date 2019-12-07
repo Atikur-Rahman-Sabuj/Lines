@@ -32,6 +32,7 @@ public class GameManager : MonoBehaviourPunCallbacks
     public int OwnScore;
     public int OpponentScore;
     public int TotalBox;
+    public DrawLine drawLine;
 
     private void Awake()
     {
@@ -181,15 +182,34 @@ public class GameManager : MonoBehaviourPunCallbacks
     public void OnPlayAgainAcceptRequest()
     {
         LocalPlayer.PlayAgainAcceptedRequestConfirmationSend();
-        SceneManager.LoadScene(SceneManager.GetActiveScene().name);
+        //SceneManager.LoadScene(SceneManager.GetActiveScene().name);
+        //PhotonNetwork.LoadLevel(SceneManager.GetActiveScene().name);
+        WinPanel.SetActive(false);
+        LoosePanel.SetActive(false);
+        DrawPanel.SetActive(false);
+        PlayAgainPanel.SetActive(false);
+        OwnScore = 0;
+        OpponentScore = 0;
+        TmProSetText(PlayerScore1, "0");
+        TmProSetText(PlayerScore2, "0");
+        drawLine.OnlineRestart();
     }
     public void OnPlayAgainRequestDeclined()
     {
-        PlayAgainPanel.SetActive(false);
+        WinPanel.SetActive(false);
+        
     }
     public void OnPlayAgainOpponentRequestAccepted()
     {
-        SceneManager.LoadScene(SceneManager.GetActiveScene().name);
+        WinPanel.SetActive(false);
+        LoosePanel.SetActive(false);
+        DrawPanel.SetActive(false);
+        PlayAgainPanel.SetActive(false);
+        OwnScore = 0;
+        OpponentScore = 0;
+        TmProSetText(PlayerScore1, "0");
+        TmProSetText(PlayerScore2, "0");
+        drawLine.OnlineRestart();
     }
     void TmProSetText(GameObject gameObject, string value)
     {

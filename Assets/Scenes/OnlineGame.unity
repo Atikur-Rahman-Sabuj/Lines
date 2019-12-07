@@ -677,6 +677,7 @@ MonoBehaviour:
   OwnScore: 0
   OpponentScore: 0
   TotalBox: 0
+  drawLine: {fileID: 1736526544}
 --- !u!4 &204583682
 Transform:
   m_ObjectHideFlags: 0
