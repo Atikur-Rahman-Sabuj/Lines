@@ -426,8 +426,9 @@ public class DrawLine : MonoBehaviour
         {
             if (IsPlayingWithMobile)
             {
-                ComputerTurn();
-                Turn.GetComponent<TextMeshProUGUI>().SetText("Computer turn");
+                StartCoroutine(CoroutineMobileSecondMove());
+               // ComputerTurn();
+               // Turn.GetComponent<TextMeshProUGUI>().SetText("Computer turn");
             }
             else
             {
@@ -436,6 +437,13 @@ public class DrawLine : MonoBehaviour
             
         }
         
+    }
+    public IEnumerator CoroutineMobileSecondMove()
+    {
+        Debug.Log("inside coroutine");
+        yield return new WaitForSeconds(1f);
+        ComputerTurn();
+        Turn.GetComponent<TextMeshProUGUI>().SetText("Computer turn");
     }
     public void OnlineDrawLine(Vector3 startPoint, Vector3 endPoint)
     {
