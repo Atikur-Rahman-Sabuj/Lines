@@ -4,7 +4,7 @@ using UnityEngine;
 using TMPro;
 using UnityEngine.SceneManagement;
 
-public class GameManagerPlayFriend : MonoBehaviour
+public class GameManagerPlayMobile : MonoBehaviour
 {
     public GameObject ConfirmHomePanel;
     public GameObject WinningPanel;
@@ -23,8 +23,8 @@ public class GameManagerPlayFriend : MonoBehaviour
     private int TotalScore;
     private void Start()
     {
-        FirstPlayerName = PlayerPrefs.GetString( Script.GetComponent<Constants>().FRIENDGAMEPLAYERNAME1);
-        SecondPlayerName =  PlayerPrefs.GetString( Script.GetComponent<Constants>().FRIENDGAMEPLAYERNAME2);
+        FirstPlayerName = PlayerPrefs.GetString(Script.GetComponent<Constants>().MOBILEGAMEPLAYERNAME);
+        SecondPlayerName = "Mobile";
         FirstPlayerNameO.SetText(FirstPlayerName);
         SecondPlayerNameO.SetText(SecondPlayerName);
         FirstPlayerScoreO.SetText("0");
@@ -69,20 +69,20 @@ public class GameManagerPlayFriend : MonoBehaviour
         if (isFirstPlayerScore)
         {
             FirstPlayerScoreO.SetText((++FirstPlayerScore).ToString());
-        }    
+        }
         else
         {
             SecondPlayerScoreO.SetText((++SecondPlayerScore).ToString());
         }
 
-        if (TotalScore<=(FirstPlayerScore+SecondPlayerScore))
+        if (TotalScore <= (FirstPlayerScore + SecondPlayerScore))
         {
-            if (FirstPlayerScore>SecondPlayerScore)
+            if (FirstPlayerScore > SecondPlayerScore)
             {
                 WinningText.SetText(FirstPlayerName + " Won!!");
                 WinningPanel.SetActive(true);
             }
-            else if (SecondPlayerScore>FirstPlayerScore)
+            else if (SecondPlayerScore > FirstPlayerScore)
             {
                 WinningText.SetText(SecondPlayerName + " Won!!");
                 WinningPanel.SetActive(true);
@@ -95,5 +95,4 @@ public class GameManagerPlayFriend : MonoBehaviour
         }
 
     }
-
 }

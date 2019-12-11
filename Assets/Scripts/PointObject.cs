@@ -17,6 +17,7 @@ public class PointObject : MonoBehaviour
         
         LineRenderer = GameObject.Find("line_for_drag");
         GameManager = GameObject.Find("GameManager");
+        Script = GameObject.Find("script");
         IsDraging = false;
         lineToDraw = null;
 
@@ -30,13 +31,18 @@ public class PointObject : MonoBehaviour
     }
     void OnMouseDrag()
     {
-        if (GameManager != null && GameManager.GetComponent<GameManager>().Turn == false)
+
+        if (Script.GetComponent<DrawLine>().IsPlayingOnline && GameManager != null && GameManager.GetComponent<GameManager>().Turn == false)
+        {
+            return;
+        }
+        if (Script.GetComponent<DrawLine>().IsPlayingWithMobile && GameManager != null && Script.GetComponent<DrawLine>().isFirstPlayerTurn == false)
         {
             return;
         }
         IsDraging = true;
         lineToDraw = null;
-        Script = GameObject.Find("script");
+        
         if (Script.GetComponent<DrawLine>().IsPlayingOnline)
         {
             if (PhotonNetwork.IsMasterClient)
@@ -136,7 +142,11 @@ public class PointObject : MonoBehaviour
     }
     private void OnMouseUp()
     {
-        if (GameManager != null && GameManager.GetComponent<GameManager>().Turn == false)
+        if (Script.GetComponent<DrawLine>().IsPlayingOnline && GameManager != null && GameManager.GetComponent<GameManager>().Turn == false)
+        {
+            return;
+        }
+        if (Script.GetComponent<DrawLine>().IsPlayingWithMobile && GameManager != null && Script.GetComponent<DrawLine>().isFirstPlayerTurn == false)
         {
             return;
         }

@@ -23,15 +23,15 @@ public class DrawLine : MonoBehaviour
     public Boolean IsPlayingWithMobile;
     [Header("For online")]
     public Boolean IsPlayingOnline;
-    public GameManager GameManager;
+    public GameObject GameManager;
 
     [Header("UI")]
-    public GameObject PlayerLabel1;
-    public GameObject PlayerLabel2;
-    public GameObject PlayerScore1;
-    public GameObject PlayerScore2;
-    public GameObject Score;
-    public GameObject Turn;
+    //public GameObject PlayerLabel1;
+    //public GameObject PlayerLabel2;
+   // public GameObject PlayerScore1;
+   // public GameObject PlayerScore2;
+   // public GameObject Score;
+  //  public GameObject Turn;
 
 
     public List<GameObject> lines = new List<GameObject>();
@@ -194,12 +194,12 @@ public class DrawLine : MonoBehaviour
         PlayerManagement.SetPlayers( IsPlayingWithMobile);
         if (!IsPlayingOnline)
         {
-            PlayerLabel1.GetComponent<TextMeshProUGUI>().SetText(PlayerManagement.Player1.Name);
-            PlayerLabel2.GetComponent<TextMeshProUGUI>().SetText(PlayerManagement.Player2.Name);
-            PlayerScore1.GetComponent<TextMeshProUGUI>().SetText("0");
-            PlayerScore2.GetComponent<TextMeshProUGUI>().SetText("0");
-            Score.GetComponent<TextMeshProUGUI>().SetText("");
-            Turn.GetComponent<TextMeshProUGUI>().SetText("First player turn");
+         //   PlayerLabel1.GetComponent<TextMeshProUGUI>().SetText(PlayerManagement.Player1.Name);
+         //   PlayerLabel2.GetComponent<TextMeshProUGUI>().SetText(PlayerManagement.Player2.Name);
+         //   PlayerScore1.GetComponent<TextMeshProUGUI>().SetText("0");
+         //   PlayerScore2.GetComponent<TextMeshProUGUI>().SetText("0");
+        //    Score.GetComponent<TextMeshProUGUI>().SetText("");
+        //    Turn.GetComponent<TextMeshProUGUI>().SetText("First player turn");
         }
         
         
@@ -308,25 +308,7 @@ public class DrawLine : MonoBehaviour
     {
         //PlayerPrefs.SetInt("STotalPointInEachSide", 5);
         SceneManager.LoadScene(SceneManager.GetActiveScene().name);
-    } public void Play4Point()
-    {
-        Debug.Log("Button 4");
-        PlayerPrefs.SetInt(STotalPointInEachSide, 4);
-        PlayerPrefs.Save();
-        SceneManager.LoadScene(SceneManager.GetActiveScene().name);
-    } public void Play5Point()
-    {
-        Debug.Log("Button 5");
-        PlayerPrefs.SetInt(STotalPointInEachSide, 5);
-        PlayerPrefs.Save();
-        SceneManager.LoadScene(SceneManager.GetActiveScene().name);
-    } public void Play6Point()
-    {
-        Debug.Log("Button 6");
-        PlayerPrefs.SetInt(STotalPointInEachSide, 6);
-        PlayerPrefs.Save();
-        SceneManager.LoadScene(SceneManager.GetActiveScene().name);
-    }
+    } 
 
     public void OnPointClick(GameObject ClickObject)
     {
@@ -402,48 +384,31 @@ public class DrawLine : MonoBehaviour
                 }
             }
         }
-        if(line == null)
-        {
-            FirstClick(clickPoint);
-            return;
-        }
-        if (line.IsDrawn)
-        {
-            FirstClick(clickPoint);
-            return;
-        }
+       
         line.DrawLine(isFirstPlayerTurn, PlayerManagement);
         OnSuccessfulLineDraw(line);
         isFirstPlayerTurn = !isFirstPlayerTurn;
-        RemoveClickedColor(previousClickedPoint);
+       // RemoveClickedColor(previousClickedPoint);
         previousClickedPoint = null;
         hasPreviousClick = false;
+        //StartCoroutine(CoroutineMobileSecondMove());
         if (isFirstPlayerTurn)
         {
-            Turn.GetComponent<TextMeshProUGUI>().SetText("First player turn");
+            GameManager.GetComponent<GameManagerPlayMobile>().PlayerSwitch(isFirstPlayerTurn);
         }
         else
         {
-            if (IsPlayingWithMobile)
-            {
-                StartCoroutine(CoroutineMobileSecondMove());
-               // ComputerTurn();
-               // Turn.GetComponent<TextMeshProUGUI>().SetText("Computer turn");
-            }
-            else
-            {
-                Turn.GetComponent<TextMeshProUGUI>().SetText("Second player turn");
-            }
-            
+            GameManager.GetComponent<GameManagerPlayMobile>().PlayerSwitch(isFirstPlayerTurn);
+            StartCoroutine(CoroutineMobileMove());
         }
         
     }
-    public IEnumerator CoroutineMobileSecondMove()
+    public IEnumerator CoroutineMobileMove()
     {
         Debug.Log("inside coroutine");
         yield return new WaitForSeconds(1f);
         ComputerTurn();
-        Turn.GetComponent<TextMeshProUGUI>().SetText("Computer turn");
+       // Turn.GetComponent<TextMeshProUGUI>().SetText("Computer turn");
     }
     public void OnlineDrawLine(Vector3 startPoint, Vector3 endPoint)
     {
@@ -521,6 +486,11 @@ public class DrawLine : MonoBehaviour
             }
         }
     }
+    
+    /// <summary>
+    /// Called when a new line is drawn by dragging one point to another
+    /// </summary>
+    /// <param name="line">Represt the line object</param>
     public void PlayerDrawLine(Line line)
     {
         
@@ -542,24 +512,35 @@ public class DrawLine : MonoBehaviour
             return;
         }
 
-
-        if (isFirstPlayerTurn)
+        if (IsPlayingWithMobile)
         {
-            Turn.GetComponent<TextMeshProUGUI>().SetText("First player turn");
+            GameManager.GetComponent<GameManagerPlayMobile>().PlayerSwitch(isFirstPlayerTurn);
+            if (!isFirstPlayerTurn)
+            {
+                StartCoroutine(CoroutineMobileMove());
+            }
+            return;
         }
-        else
-        {
-            if (IsPlayingWithMobile)
-            {
-                ComputerTurn();
-                Turn.GetComponent<TextMeshProUGUI>().SetText("Computer turn");
-            }
-            else
-            {
-                Turn.GetComponent<TextMeshProUGUI>().SetText("Second player turn");
-            }
 
-        }
+
+        
+            //Turn.GetComponent<TextMeshProUGUI>().SetText("First player turn");
+        GameManager.GetComponent<GameManagerPlayFriend>().PlayerSwitch(isFirstPlayerTurn);
+       
+        //else
+        //{
+        //    if (IsPlayingWithMobile)
+        //    {
+        //        ComputerTurn();
+        //        //Turn.GetComponent<TextMeshProUGUI>().SetText("Computer turn");
+        //    }
+        //    else
+        //    {
+        //        //Turn.GetComponent<TextMeshProUGUI>().SetText("Second player turn");
+        //        GameManager.GetComponent<GameManagerPlayFriend>().PlayerSwitch(isFirstPlayerTurn);
+        //    }
+
+        //}
     }
     private void OnSuccessfulLineDraw(Line line)
     {
@@ -579,19 +560,15 @@ public class DrawLine : MonoBehaviour
                             Boxes[i][j].DrawBox(PhotonNetwork.IsMasterClient, PlayerManagement);
                             GameManager.GetComponent<GameManager>().IncrementScoreForBoxDrawn();
                         }
+                        else if (IsPlayingWithMobile)
+                        {
+                            Boxes[i][j].DrawBox(isFirstPlayerTurn, PlayerManagement);
+                            GameManager.GetComponent<GameManagerPlayMobile>().OnScoreUpdate(isFirstPlayerTurn);
+                        }
                         else
                         {
                             Boxes[i][j].DrawBox(isFirstPlayerTurn, PlayerManagement);
-                            if (isFirstPlayerTurn)
-                            {
-                                PlayerManagement.Player1.Score += 1;
-                                PlayerScore1.GetComponent<TextMeshProUGUI>().SetText(PlayerManagement.Player1.Score.ToString());
-                            }
-                            else
-                            {
-                                PlayerManagement.Player2.Score += 1;
-                                PlayerScore2.GetComponent<TextMeshProUGUI>().SetText(PlayerManagement.Player2.Score.ToString());
-                            }
+                            GameManager.GetComponent<GameManagerPlayFriend>().OnScoreUpdate(isFirstPlayerTurn);
                         }
                     }
                 }
@@ -604,22 +581,22 @@ public class DrawLine : MonoBehaviour
             //    GameManager.GetComponent<GameManager>().IncrementScoreForBoxDrawn();
             isFirstPlayerTurn = !isFirstPlayerTurn;
         }
-        if (IsPlayingOnline) return;
-        if((PlayerManagement.Player1.Score + PlayerManagement.Player2.Score) >= TotalBox)
-        {
-            if(PlayerManagement.Player1.Score> PlayerManagement.Player2.Score)
-            {
-                Score.GetComponent<TextMeshProUGUI>().SetText("Player 1 Wins");
-            }
-            else if (PlayerManagement.Player1.Score < PlayerManagement.Player2.Score)
-            {
-                Score.GetComponent<TextMeshProUGUI>().SetText("Player 2 Wins");
-            }
-            else
-            {
-                Score.GetComponent<TextMeshProUGUI>().SetText("It's a Tie");
-            }
-        }
+       // if (IsPlayingOnline) return;
+        //if((PlayerManagement.Player1.Score + PlayerManagement.Player2.Score) >= TotalBox)
+        //{
+        //    if(PlayerManagement.Player1.Score> PlayerManagement.Player2.Score)
+        //    {
+        //        Score.GetComponent<TextMeshProUGUI>().SetText("Player 1 Wins");
+        //    }
+        //    else if (PlayerManagement.Player1.Score < PlayerManagement.Player2.Score)
+        //    {
+        //        Score.GetComponent<TextMeshProUGUI>().SetText("Player 2 Wins");
+        //    }
+        //    else
+        //    {
+        //        Score.GetComponent<TextMeshProUGUI>().SetText("It's a Tie");
+        //    }
+        //}
     }
     private void ApplyClickedColor(Point point)
     {
