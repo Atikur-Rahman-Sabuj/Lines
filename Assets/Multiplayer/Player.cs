@@ -99,16 +99,17 @@ public class Player : MonoBehaviourPun
     [PunRPC]
     void ChangeTurn(int senderViewId, Vector3 startPoint, Vector3 endPoint, bool turn, PhotonMessageInfo info)
     {
-        Debug.Log(senderViewId.ToString() + "   " + photonView.ViewID);
-        Debug.Log(photonView.IsMine);
+       // Debug.Log(senderViewId.ToString() + "   " + photonView.ViewID);
+       // Debug.Log(photonView.IsMine);
 
         if (!photonView.IsMine)
         {
             Debug.Log("Whats my turn: "+ !turn);
             //reflect players turn to other player view
-            Script.GetComponent<DrawLine>().ReflectOtherNetworkPlayerTurn(startPoint, endPoint, !PhotonNetwork.IsMasterClient);
-            GameManager.GetComponent<GameManager>().Turn = !turn;
-            GameManager.GetComponent<GameManager>().TurnText.GetComponent<Animator>().Play("TurnChange");
+            //Script.GetComponent<DrawLine>().ReflectOtherNetworkPlayerTurn(startPoint, endPoint, !PhotonNetwork.IsMasterClient);
+            //GameManager.GetComponent<GameManager>().Turn = !turn;
+           // GameManager.GetComponent<GameManager>().TurnText.GetComponent<Animator>().Play("TurnChange");
+            GameManager.GetComponent<GameManager>().OnOpponentTurnComplete(startPoint, endPoint, turn);
         }
 
         //Properties
@@ -184,6 +185,20 @@ public class Player : MonoBehaviourPun
         if (!photonView.IsMine)
         {
             GameManager.GetComponent<GameManager>().OnPlayAgainOpponentRequestAccepted();
+        }
+    }
+    public void TimeEndedMessageSend()
+    {
+
+        photonView.RPC("TimeEndedMessageReceive", RpcTarget.All, photonView.ViewID);
+    }
+
+    [PunRPC]
+    void TimeEndedMessageReceive(int senderViewId, PhotonMessageInfo info)
+    {
+        if (!photonView.IsMine)
+        {
+            GameManager.GetComponent<GameManager>().onOpponetTimeFinish();
         }
     }
 }

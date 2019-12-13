@@ -40,5 +40,6 @@ MonoBehaviour:
   - OnOpponentLeftGame
   - PlayAgainGotRequest
   - PlayAgainAcceptedConfirm
+  - TimeEndedMessageReceive
   DisableAutoOpenWizard: 1
   ShowSettings: 1

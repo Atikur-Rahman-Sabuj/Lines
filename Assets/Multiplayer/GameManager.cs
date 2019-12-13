@@ -10,7 +10,7 @@ using TMPro;
 public class GameManager : MonoBehaviourPunCallbacks
 {
     [Header("UC Game Manager")]
-
+    public GameObject Script;
     public Player PlayerPrefab;
     [Header("UI")]
     public GameObject PlayerLabel1;
@@ -23,7 +23,10 @@ public class GameManager : MonoBehaviourPunCallbacks
     public GameObject WinPanel;
     public GameObject LoosePanel;
     public GameObject DrawPanel;
+    public GameObject TimeFinishPanel;
     public GameObject PlayAgainPanel;
+    public TextMeshProUGUI TimeText;
+    public TextMeshProUGUI TimePanelText;
     [HideInInspector]
     public Player LocalPlayer;
     public bool Turn;
@@ -33,6 +36,11 @@ public class GameManager : MonoBehaviourPunCallbacks
     public int OpponentScore;
     public int TotalBox;
     public DrawLine drawLine;
+    private Boolean ShowTime;
+    private int RemainingTime = 60;
+    private float waitTime = 1.0f;
+    private float timer = 0.0f;
+    private bool CheckTime = true;
 
     private void Awake()
     {
@@ -71,9 +79,18 @@ public class GameManager : MonoBehaviourPunCallbacks
         //TurnText.GetComponent<Animator>().SetBool("newTurn", true);
         TurnText.GetComponent<Animator>().Play("TurnChange");
     }
-   
-    
-    
+
+    private void InitializeTime()
+    {
+        RemainingTime = 60;
+        waitTime = 1.0f;
+        timer = 0.0f;
+        TimeText.SetText(RemainingTime.ToString());
+        
+    }
+
+
+
     public void onClickButtonSendData()
     {
         LocalPlayer.OnSendDataButtonClick();
@@ -81,9 +98,18 @@ public class GameManager : MonoBehaviourPunCallbacks
     public void OnTurnComplete(Vector3 startPoint, Vector3 endPoint, bool turn)
     {
 
-        LocalPlayer.TurnChange( startPoint, endPoint, turn);
+        LocalPlayer.TurnChange(startPoint, endPoint, turn);
         Turn = turn;
+        InitializeTime();
         TurnText.GetComponent<Animator>().Play("TurnChange");
+    }
+    public void OnOpponentTurnComplete(Vector3 startPoint, Vector3 endPoint, bool turn)
+    {
+
+        Script.GetComponent<DrawLine>().ReflectOtherNetworkPlayerTurn(startPoint, endPoint, !PhotonNetwork.IsMasterClient);
+        Turn = !turn;
+        TurnText.GetComponent<Animator>().Play("TurnChange");
+        InitializeTime();
     }
     // Update is called once per frame
     void Update()
@@ -94,8 +120,27 @@ public class GameManager : MonoBehaviourPunCallbacks
         }
         else
         {
-            TmProSetText(TurnText, OpponentName+"'s turn");
+            TmProSetText(TurnText, OpponentName + "'s turn");
         }
+        if (CheckTime)
+        {
+            timer += Time.deltaTime;
+            if (timer > waitTime)
+            {
+                RemainingTime--;
+                if (RemainingTime < 0 && Turn == true)
+                {
+                    onTimeFinish();
+                }
+                if (RemainingTime < -30 && Turn == false)
+                {
+                    onOpponetTimeFinish();
+                }
+                timer = timer - waitTime;
+                TimeText.SetText(RemainingTime.ToString());
+            }
+        }
+
     }
 
     public override void OnPlayerEnteredRoom(Photon.Realtime.Player newPlayer)
@@ -103,6 +148,23 @@ public class GameManager : MonoBehaviourPunCallbacks
         Player.RefreshInstance(ref LocalPlayer, PlayerPrefab);
         Debug.Log("OnPlayerEnterRoom");
     }
+    private void onTimeFinish()
+    {
+        TimeFinishPanel.SetActive(true);
+        CheckTime = false;
+        TimeText.SetText("");
+        TimePanelText.SetText("Time out! You loose the game!");
+        LocalPlayer.TimeEndedMessageSend();
+    }
+
+    public void onOpponetTimeFinish()
+    {
+        TimeFinishPanel.SetActive(true);
+        CheckTime = false;
+        TimeText.SetText("");
+        TimePanelText.SetText(PlayerName+"'s time out! You won the game!");
+    }
+
     public void LeaveRoom()
     {
         PhotonNetwork.LeaveRoom();
@@ -113,7 +175,7 @@ public class GameManager : MonoBehaviourPunCallbacks
         Debug.Log("Left room");
         PhotonNetwork.Disconnect();
         
-        SceneManager.LoadScene("MainMenu");
+        //SceneManager.LoadScene("MainMenu");
     }
     public override void OnDisconnected(DisconnectCause cause)
     {
@@ -182,8 +244,6 @@ public class GameManager : MonoBehaviourPunCallbacks
     public void OnPlayAgainAcceptRequest()
     {
         LocalPlayer.PlayAgainAcceptedRequestConfirmationSend();
-        //SceneManager.LoadScene(SceneManager.GetActiveScene().name);
-        //PhotonNetwork.LoadLevel(SceneManager.GetActiveScene().name);
         WinPanel.SetActive(false);
         LoosePanel.SetActive(false);
         DrawPanel.SetActive(false);
