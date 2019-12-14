@@ -78,6 +78,7 @@ public class GameManager : MonoBehaviourPunCallbacks
         Player.RefreshInstance(ref LocalPlayer, PlayerPrefab);
         //TurnText.GetComponent<Animator>().SetBool("newTurn", true);
         TurnText.GetComponent<Animator>().Play("TurnChange");
+        InitializeTime();
     }
 
     private void InitializeTime()
@@ -86,7 +87,9 @@ public class GameManager : MonoBehaviourPunCallbacks
         waitTime = 1.0f;
         timer = 0.0f;
         TimeText.SetText(RemainingTime.ToString());
-        
+        TimeText.gameObject.SetActive(true);
+
+
     }
 
 
@@ -209,6 +212,7 @@ public class GameManager : MonoBehaviourPunCallbacks
             {
                 OnDraw(OwnScore, OpponentScore);
             }
+            TimeText.gameObject.SetActive(false);
         }
     }
     public void OnOwnScoreUpdate()

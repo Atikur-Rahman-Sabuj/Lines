@@ -66,7 +66,7 @@ public class MainMenu : MonoBehaviour
         string name = InputOnlinePlayer.text;
         PlayerPrefs.SetString(GetComponent<Constants>().ONLINEGAMEPLAYERNAME, name);
         PlayerPrefs.SetInt(GetComponent<Constants>().TOTALPOINTS, 3);
-        SceneManager.LoadScene("PlayMobile");
+        SceneManager.LoadScene("OnlinePlayFriendLobby");
 
     }
     public void OnPlayMobileSixClick()
