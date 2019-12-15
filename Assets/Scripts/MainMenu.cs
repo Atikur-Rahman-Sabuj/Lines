@@ -31,17 +31,20 @@ public class MainMenu : MonoBehaviour
 
     public void OnPlayWithMobileClick()
     {
+        FindObjectOfType<AudioManager>().Play("button_click");
         MainCanvas.SetActive(false);
         PlayWithMobileCanvas.SetActive(true);
     }
     public void OnPlayWithFriend()
     {
+        FindObjectOfType<AudioManager>().Play("button_click");
         MainCanvas.SetActive(false);
         PlayWithFriendCanvas.SetActive(true);
     }
 
     public void OnHomeClick()
     {
+        FindObjectOfType<AudioManager>().Play("button_click");
         PlayWithMobileCanvas.SetActive(false);
         PlayWithFriendCanvas.SetActive(false);
         PlayOnlineCanvas.SetActive(false);
@@ -51,11 +54,13 @@ public class MainMenu : MonoBehaviour
 
     public void OnPlayOnlineClick()
     {
+        FindObjectOfType<AudioManager>().Play("button_click");
         MainCanvas.SetActive(false);
         PlayOnlineCanvas.SetActive(true);
     }   
     public void OnOnlinePlayRandomClick()
     {
+        FindObjectOfType<AudioManager>().Play("button_click");
         string name = InputOnlinePlayer.text;
         PlayerPrefs.SetString(GetComponent<Constants>().ONLINEGAMEPLAYERNAME, name);
         PlayerPrefs.SetInt(GetComponent<Constants>().TOTALPOINTS, 3);
@@ -63,6 +68,7 @@ public class MainMenu : MonoBehaviour
     }
     public void OnOnlinePlayWithFriendClick()
     {
+        FindObjectOfType<AudioManager>().Play("button_click");
         string name = InputOnlinePlayer.text;
         PlayerPrefs.SetString(GetComponent<Constants>().ONLINEGAMEPLAYERNAME, name);
         PlayerPrefs.SetInt(GetComponent<Constants>().TOTALPOINTS, 3);
@@ -71,6 +77,7 @@ public class MainMenu : MonoBehaviour
     }
     public void OnPlayMobileSixClick()
     {
+        FindObjectOfType<AudioManager>().Play("button_click");
         string name = InputMobilePlayer.text;
 
         PlayerPrefs.SetString(GetComponent<Constants>().MOBILEGAMEPLAYERNAME, name);
@@ -79,6 +86,7 @@ public class MainMenu : MonoBehaviour
     }
     public void OnPlayMobileEightClick()
     {
+        FindObjectOfType<AudioManager>().Play("button_click");
         string name = InputMobilePlayer.text;
 
         PlayerPrefs.SetString(GetComponent<Constants>().MOBILEGAMEPLAYERNAME, name);
@@ -87,6 +95,7 @@ public class MainMenu : MonoBehaviour
     }
     public void OnPlayFriendSixClick()
     {
+        FindObjectOfType<AudioManager>().Play("button_click");
         string name1 =  InputFriendPlayer1.text;
         string name2 = InputFriendPlayer2.text;
 
@@ -97,6 +106,7 @@ public class MainMenu : MonoBehaviour
     }
     public void OnPlayFriendEightClick()
     {
+        FindObjectOfType<AudioManager>().Play("button_click");
         string name1 = InputFriendPlayer1.text;
         string name2 = InputFriendPlayer2.text;
 
