@@ -7,6 +7,7 @@ using TMPro;
 public class MainMenu : MonoBehaviour
 {
     [Header("Canvases")]
+    public GameObject ParentCanvas;
     public GameObject MainCanvas;
     public GameObject PlayWithMobileCanvas;
     public GameObject PlayWithFriendCanvas;
@@ -27,6 +28,8 @@ public class MainMenu : MonoBehaviour
         InputFriendPlayer1.text = PlayerPrefs.GetString(constans.FRIENDGAMEPLAYERNAME1, "");
         InputFriendPlayer2.text = PlayerPrefs.GetString(constans.FRIENDGAMEPLAYERNAME2, "");
         InputOnlinePlayer.text = PlayerPrefs.GetString(constans.ONLINEGAMEPLAYERNAME, "");
+        ParentCanvas.GetComponent<Animator>().SetTrigger("Scene_start");
+        
     }
 
     public void OnPlayWithMobileClick()
@@ -34,11 +37,15 @@ public class MainMenu : MonoBehaviour
         FindObjectOfType<AudioManager>().Play("button_click");
         MainCanvas.SetActive(false);
         PlayWithMobileCanvas.SetActive(true);
+        ParentCanvas.GetComponent<Animator>().SetTrigger("MGMP_enter");
+        
+        
     }
     public void OnPlayWithFriend()
     {
         FindObjectOfType<AudioManager>().Play("button_click");
         MainCanvas.SetActive(false);
+        ParentCanvas.GetComponent<Animator>().SetTrigger("PWFP_enter");
         PlayWithFriendCanvas.SetActive(true);
     }
 
@@ -49,6 +56,7 @@ public class MainMenu : MonoBehaviour
         PlayWithFriendCanvas.SetActive(false);
         PlayOnlineCanvas.SetActive(false);
         MainCanvas.SetActive(true);
+        ParentCanvas.GetComponent<Animator>().SetTrigger("MMP_enter");
     }
 
 
@@ -57,6 +65,7 @@ public class MainMenu : MonoBehaviour
         FindObjectOfType<AudioManager>().Play("button_click");
         MainCanvas.SetActive(false);
         PlayOnlineCanvas.SetActive(true);
+        ParentCanvas.GetComponent<Animator>().SetTrigger("POP_enter");
     }   
     public void OnOnlinePlayRandomClick()
     {
@@ -82,7 +91,8 @@ public class MainMenu : MonoBehaviour
 
         PlayerPrefs.SetString(GetComponent<Constants>().MOBILEGAMEPLAYERNAME, name);
         PlayerPrefs.SetInt(GetComponent<Constants>().TOTALPOINTS, 6);
-        SceneManager.LoadScene("PlayMobile");
+        StartCoroutine(CoroutineLoadScene("PlayMobile"));
+        //SceneManager.LoadScene("PlayMobile");
     }
     public void OnPlayMobileEightClick()
     {
@@ -116,5 +126,12 @@ public class MainMenu : MonoBehaviour
         SceneManager.LoadScene("PlayFriend");
     }
 
-    
+    public IEnumerator CoroutineLoadScene(string sceneName)
+    {
+        ParentCanvas.GetComponent<Animator>().SetTrigger("Scene_end");
+        yield return new WaitForSeconds(1f);
+        SceneManager.LoadScene(sceneName);
+    }
+
+
 }

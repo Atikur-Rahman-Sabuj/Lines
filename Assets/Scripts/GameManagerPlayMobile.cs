@@ -6,6 +6,7 @@ using UnityEngine.SceneManagement;
 
 public class GameManagerPlayMobile : MonoBehaviour
 {
+    public GameObject MainCanvas;
     public GameObject ConfirmHomePanel;
     public GameObject WinningPanel;
     public TextMeshProUGUI WinningText;
@@ -32,6 +33,7 @@ public class GameManagerPlayMobile : MonoBehaviour
         PlayerSwitch(true);
         int TotalPointInEachSide = PlayerPrefs.GetInt(Script.GetComponent<Constants>().TOTALPOINTS, 6);
         TotalScore = (TotalPointInEachSide - 1) * (TotalPointInEachSide - 1);
+        MainCanvas.GetComponent<Animator>().SetTrigger("Scene_start");
     }
     public void onHomeClick()
     {
