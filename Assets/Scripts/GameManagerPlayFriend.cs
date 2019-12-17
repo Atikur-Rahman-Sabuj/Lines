@@ -6,6 +6,7 @@ using UnityEngine.SceneManagement;
 
 public class GameManagerPlayFriend : MonoBehaviour
 {
+    public GameObject MainCanvas;
     public GameObject ConfirmHomePanel;
     public GameObject WinningPanel;
     public TextMeshProUGUI WinningText;
@@ -32,23 +33,26 @@ public class GameManagerPlayFriend : MonoBehaviour
         PlayerSwitch(true);
         int TotalPointInEachSide = PlayerPrefs.GetInt(Script.GetComponent<Constants>().TOTALPOINTS, 6);
         TotalScore = (TotalPointInEachSide - 1) * (TotalPointInEachSide - 1);
+        MainCanvas.GetComponent<Animator>().SetTrigger("Scene_start");
     }
     public void onHomeClick()
     {
+        MainCanvas.GetComponent<Animator>().SetTrigger("HCP_enter");
         ConfirmHomePanel.SetActive(true);
     }
     public void onGoHomeConfirm()
     {
-        SceneManager.LoadScene("MainMenu");
+        StartCoroutine(CoroutineLoadScene("MainMenu"));
     }
     public void onGoHomeCancel()
     {
-        ConfirmHomePanel.SetActive(false);
+        StartCoroutine(CoroutineDeactiveObject(ConfirmHomePanel, "HCP_leave"));
     }
 
     public void onPlayAgainClick()
     {
-        SceneManager.LoadScene(SceneManager.GetActiveScene().name);
+       // StartCoroutine(CoroutineDeactiveObject(WinningPanel, "WP_leave"));
+        StartCoroutine(CoroutineLoadScene(SceneManager.GetActiveScene().name));
     }
     public void PlayerSwitch(bool isFirstPlayerTurn)
     {
@@ -77,6 +81,7 @@ public class GameManagerPlayFriend : MonoBehaviour
 
         if (TotalScore<=(FirstPlayerScore+SecondPlayerScore))
         {
+            MainCanvas.GetComponent<Animator>().SetTrigger("WP_enter");
             if (FirstPlayerScore>SecondPlayerScore)
             {
                 WinningText.SetText(FirstPlayerName + " Won!!");
@@ -94,6 +99,18 @@ public class GameManagerPlayFriend : MonoBehaviour
             }
         }
 
+    }
+    public IEnumerator CoroutineLoadScene(string sceneName)
+    {
+        MainCanvas.GetComponent<Animator>().SetTrigger("Scene_end");
+        yield return new WaitForSeconds(1f);
+        SceneManager.LoadScene(sceneName);
+    }
+    public IEnumerator CoroutineDeactiveObject(GameObject panelName, string triggetName)
+    {
+        MainCanvas.GetComponent<Animator>().SetTrigger(triggetName);
+        yield return new WaitForSeconds(.5f);
+        panelName.SetActive(false);
     }
 
 }

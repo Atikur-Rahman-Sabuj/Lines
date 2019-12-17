@@ -37,20 +37,23 @@ public class GameManagerPlayMobile : MonoBehaviour
     }
     public void onHomeClick()
     {
+        MainCanvas.GetComponent<Animator>().SetTrigger("HCP_enter");
         ConfirmHomePanel.SetActive(true);
     }
     public void onGoHomeConfirm()
     {
-        SceneManager.LoadScene("MainMenu");
+        StartCoroutine(CoroutineLoadScene("MainMenu"));
     }
     public void onGoHomeCancel()
     {
-        ConfirmHomePanel.SetActive(false);
+        StartCoroutine(CoroutineDeactiveObject(ConfirmHomePanel, "HCP_leave"));
     }
 
     public void onPlayAgainClick()
     {
-        SceneManager.LoadScene(SceneManager.GetActiveScene().name);
+        //StartCoroutine(CoroutineDeactiveObject(WinningPanel, "WP_leave"));
+        StartCoroutine(CoroutineLoadScene(SceneManager.GetActiveScene().name));
+        //SceneManager.LoadScene(SceneManager.GetActiveScene().name);
     }
     public void PlayerSwitch(bool isFirstPlayerTurn)
     {
@@ -79,6 +82,7 @@ public class GameManagerPlayMobile : MonoBehaviour
 
         if (TotalScore <= (FirstPlayerScore + SecondPlayerScore))
         {
+            MainCanvas.GetComponent<Animator>().SetTrigger("WP_enter");
             if (FirstPlayerScore > SecondPlayerScore)
             {
                 WinningText.SetText(FirstPlayerName + " Won!!");
@@ -96,5 +100,17 @@ public class GameManagerPlayMobile : MonoBehaviour
             }
         }
 
+    }
+    public IEnumerator CoroutineLoadScene(string sceneName)
+    {
+        MainCanvas.GetComponent<Animator>().SetTrigger("Scene_end");
+        yield return new WaitForSeconds(1f);
+        SceneManager.LoadScene(sceneName);
+    }
+    public IEnumerator CoroutineDeactiveObject(GameObject panelName, string triggetName)
+    {
+        MainCanvas.GetComponent<Animator>().SetTrigger(triggetName);
+        yield return new WaitForSeconds(.5f);
+        panelName.SetActive(false);
     }
 }

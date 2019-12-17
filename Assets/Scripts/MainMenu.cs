@@ -90,7 +90,7 @@ public class MainMenu : MonoBehaviour
         string name = InputMobilePlayer.text;
 
         PlayerPrefs.SetString(GetComponent<Constants>().MOBILEGAMEPLAYERNAME, name);
-        PlayerPrefs.SetInt(GetComponent<Constants>().TOTALPOINTS, 6);
+        PlayerPrefs.SetInt(GetComponent<Constants>().TOTALPOINTS, 2);
         StartCoroutine(CoroutineLoadScene("PlayMobile"));
         //SceneManager.LoadScene("PlayMobile");
     }
@@ -101,7 +101,8 @@ public class MainMenu : MonoBehaviour
 
         PlayerPrefs.SetString(GetComponent<Constants>().MOBILEGAMEPLAYERNAME, name);
         PlayerPrefs.SetInt(GetComponent<Constants>().TOTALPOINTS, 8);
-        SceneManager.LoadScene("PlayMobile");
+        StartCoroutine(CoroutineLoadScene("PlayMobile"));
+        //SceneManager.LoadScene("PlayMobile");
     }
     public void OnPlayFriendSixClick()
     {
@@ -111,7 +112,7 @@ public class MainMenu : MonoBehaviour
 
         PlayerPrefs.SetString(GetComponent<Constants>().FRIENDGAMEPLAYERNAME1, name1);
         PlayerPrefs.SetString(GetComponent<Constants>().FRIENDGAMEPLAYERNAME2, name2);
-        PlayerPrefs.SetInt(GetComponent<Constants>().TOTALPOINTS, 6);
+        PlayerPrefs.SetInt(GetComponent<Constants>().TOTALPOINTS, 2);
         SceneManager.LoadScene("PlayFriend");
     }
     public void OnPlayFriendEightClick()
