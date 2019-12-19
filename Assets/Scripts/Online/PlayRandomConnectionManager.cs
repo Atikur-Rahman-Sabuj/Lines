@@ -7,6 +7,7 @@ using UnityEngine.SceneManagement;
 
 public class PlayRandomConnectionManager : MonoBehaviourPunCallbacks
 {
+    public GameObject MainCanvas;
     public GameObject LoadingPanel;
     public GameObject NotLoadingPanel;
 
@@ -136,6 +137,18 @@ public class PlayRandomConnectionManager : MonoBehaviourPunCallbacks
         PlayerPrefs.SetString(GetComponent<Constants>().ONLINEGAMEOPPONENTPLAYERNAME, opponentName);
         SceneManager.LoadScene("OnlineGame");
 
+    }
+    public IEnumerator CoroutineLoadScene(string sceneName)
+    {
+        MainCanvas.GetComponent<Animator>().SetTrigger("Scene_end");
+        yield return new WaitForSeconds(1f);
+        SceneManager.LoadScene(sceneName);
+    }
+    public IEnumerator CoroutineDeactiveObject(GameObject panelName, string triggetName)
+    {
+        MainCanvas.GetComponent<Animator>().SetTrigger(triggetName);
+        yield return new WaitForSeconds(.5f);
+        panelName.SetActive(false);
     }
 
 }

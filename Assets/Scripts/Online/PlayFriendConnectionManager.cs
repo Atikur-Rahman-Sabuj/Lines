@@ -8,6 +8,8 @@ using TMPro;
 
 public class PlayFriendConnectionManager : MonoBehaviourPunCallbacks
 {
+    public GameObject MainCanvas;
+
     [Header("Panels")]
     public GameObject InitialPanel;
     public GameObject CreateGamePanel;
@@ -28,6 +30,7 @@ public class PlayFriendConnectionManager : MonoBehaviourPunCallbacks
     private int counter;
     void Start()
     {
+        MainCanvas.GetComponent<Animator>().SetTrigger("Scene_start");
         PlayerName = PlayerPrefs.GetString(GetComponent<Constants>().ONLINEGAMEPLAYERNAME, "");
         PlayerName = PlayerName == "" ? "Player" : PlayerName;
         PhotonNetwork.NickName = PlayerName;
@@ -42,6 +45,7 @@ public class PlayFriendConnectionManager : MonoBehaviourPunCallbacks
 
             Debug.Log(e.Message);
         }
+
 
     }
 
@@ -60,11 +64,13 @@ public class PlayFriendConnectionManager : MonoBehaviourPunCallbacks
             PhotonNetwork.LeaveRoom();
         if (PhotonNetwork.IsConnected)
             PhotonNetwork.Disconnect();
-        SceneManager.LoadScene("MainMenu");
+        StartCoroutine(CoroutineLoadScene("MainMenu"));
+       // SceneManager.LoadScene("MainMenu");
     }
     public void OnTryAgainClick()
     {
         FailedPanel.SetActive(false);
+        MainCanvas.GetComponent<Animator>().SetTrigger("IP_enter");
         InitialPanel.SetActive(true);
     }
     public override void OnConnectedToMaster()
@@ -80,6 +86,7 @@ public class PlayFriendConnectionManager : MonoBehaviourPunCallbacks
         {
             if(!PhotonNetwork.IsConnected)
                 PhotonNetwork.ConnectUsingSettings();
+            MainCanvas.GetComponent<Animator>().SetTrigger("CGP_enter");
             CreateGamePanel.SetActive(true);
             InitialPanel.SetActive(false);
         }
@@ -98,6 +105,7 @@ public class PlayFriendConnectionManager : MonoBehaviourPunCallbacks
         {
             if (!PhotonNetwork.IsConnected)
                 PhotonNetwork.ConnectUsingSettings();
+            MainCanvas.GetComponent<Animator>().SetTrigger("JGP_enter");
             JoinGamePanel.SetActive(true);
             InitialPanel.SetActive(false);
         }
@@ -114,7 +122,8 @@ public class PlayFriendConnectionManager : MonoBehaviourPunCallbacks
         if (GameName.Equals(""))
             return;
         PhotonNetwork.CreateRoom(GameName, new RoomOptions { MaxPlayers = 2 });
-        CreateGamePanel.SetActive(false);
+        StartCoroutine(CoroutineDeactiveObject(CreateGamePanel, "CGP_leave"));
+        //CreateGamePanel.SetActive(false);
         LoadingPanel.SetActive(true);
     }
     public void OnJoinGameclick()
@@ -123,7 +132,8 @@ public class PlayFriendConnectionManager : MonoBehaviourPunCallbacks
         if (GameName.Equals(""))
             return;
         PhotonNetwork.JoinRoom(GameName);
-        JoinGamePanel.SetActive(false);
+        StartCoroutine(CoroutineDeactiveObject(JoinGamePanel, "JGP_leave"));
+        //JoinGamePanel.SetActive(false);
         LoadingPanel.SetActive(true);
     }
     
@@ -132,6 +142,7 @@ public class PlayFriendConnectionManager : MonoBehaviourPunCallbacks
         base.OnDisconnected(cause);
         Debug.Log(cause);
         InitialPanel.SetActive(true);
+        MainCanvas.GetComponent<Animator>().SetTrigger("IP_enter");
         HideAllPanelsExceptInitial();
     }
 
@@ -143,6 +154,7 @@ public class PlayFriendConnectionManager : MonoBehaviourPunCallbacks
         base.OnCreateRoomFailed(returnCode, message);
         LoadingPanel.SetActive(false);
         TextErrorMessage.text = "Couldn't create game, Please try again!";
+        MainCanvas.GetComponent<Animator>().SetTrigger("FP_enter");
         FailedPanel.SetActive(true);
     }
     public override void OnCreatedRoom()
@@ -151,6 +163,7 @@ public class PlayFriendConnectionManager : MonoBehaviourPunCallbacks
         Debug.Log("Room created");
         LoadingPanel.SetActive(false);
         TextGameName.text = GameName;
+        MainCanvas.GetComponent<Animator>().SetTrigger("GCP_enter");
         GameCreatedPanel.SetActive(true);
     }
 
@@ -159,6 +172,7 @@ public class PlayFriendConnectionManager : MonoBehaviourPunCallbacks
         if(PhotonNetwork.InRoom)
             PhotonNetwork.LeaveRoom();
         GameCreatedPanel.SetActive(false);
+        MainCanvas.GetComponent<Animator>().SetTrigger("IP_enter");
         InitialPanel.SetActive(true);
 
     }
@@ -168,6 +182,7 @@ public class PlayFriendConnectionManager : MonoBehaviourPunCallbacks
         base.OnJoinRoomFailed(returnCode, message);
         Debug.Log(message);
         TextErrorMessage.text = "Couldn't join game, Please try again!";
+        MainCanvas.GetComponent<Animator>().SetTrigger("FP_enter");
         FailedPanel.SetActive(true);
     }
 
@@ -213,6 +228,18 @@ public class PlayFriendConnectionManager : MonoBehaviourPunCallbacks
         JoinGamePanel.SetActive(false);
         FailedPanel.SetActive(false);
         LoadingPanel.SetActive(false);
+    }
+    public IEnumerator CoroutineLoadScene(string sceneName)
+    {
+        MainCanvas.GetComponent<Animator>().SetTrigger("Scene_end");
+        yield return new WaitForSeconds(1f);
+        SceneManager.LoadScene(sceneName);
+    }
+    public IEnumerator CoroutineDeactiveObject(GameObject panelName, string triggetName)
+    {
+        MainCanvas.GetComponent<Animator>().SetTrigger(triggetName);
+        yield return new WaitForSeconds(.5f);
+        panelName.SetActive(false);
     }
 
 }
