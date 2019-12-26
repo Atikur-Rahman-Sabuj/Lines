@@ -73,7 +73,8 @@ public class MainMenu : MonoBehaviour
         string name = InputOnlinePlayer.text;
         PlayerPrefs.SetString(GetComponent<Constants>().ONLINEGAMEPLAYERNAME, name);
         PlayerPrefs.SetInt(GetComponent<Constants>().TOTALPOINTS, 3);
-        SceneManager.LoadScene("OnlinePlayRandomLobby");
+        StartCoroutine(CoroutineLoadScene("OnlinePlayRandomLobby"));
+        //SceneManager.LoadScene("OnlinePlayRandomLobby");
     }
     public void OnOnlinePlayWithFriendClick()
     {
@@ -81,7 +82,8 @@ public class MainMenu : MonoBehaviour
         string name = InputOnlinePlayer.text;
         PlayerPrefs.SetString(GetComponent<Constants>().ONLINEGAMEPLAYERNAME, name);
         PlayerPrefs.SetInt(GetComponent<Constants>().TOTALPOINTS, 3);
-        SceneManager.LoadScene("OnlinePlayFriendLobby");
+        StartCoroutine(CoroutineLoadScene("OnlinePlayFriendLobby"));
+        //SceneManager.LoadScene("OnlinePlayFriendLobby");
 
     }
     public void OnPlayMobileSixClick()
@@ -113,7 +115,8 @@ public class MainMenu : MonoBehaviour
         PlayerPrefs.SetString(GetComponent<Constants>().FRIENDGAMEPLAYERNAME1, name1);
         PlayerPrefs.SetString(GetComponent<Constants>().FRIENDGAMEPLAYERNAME2, name2);
         PlayerPrefs.SetInt(GetComponent<Constants>().TOTALPOINTS, 2);
-        SceneManager.LoadScene("PlayFriend");
+        StartCoroutine(CoroutineLoadScene("PlayFriend"));
+        //SceneManager.LoadScene("PlayFriend");
     }
     public void OnPlayFriendEightClick()
     {
@@ -124,7 +127,8 @@ public class MainMenu : MonoBehaviour
         PlayerPrefs.SetString(GetComponent<Constants>().FRIENDGAMEPLAYERNAME1, name1);
         PlayerPrefs.SetString(GetComponent<Constants>().FRIENDGAMEPLAYERNAME2, name2);
         PlayerPrefs.SetInt(GetComponent<Constants>().TOTALPOINTS, 8);
-        SceneManager.LoadScene("PlayFriend");
+        StartCoroutine(CoroutineLoadScene("PlayFriend"));
+       // SceneManager.LoadScene("PlayFriend");
     }
 
     public IEnumerator CoroutineLoadScene(string sceneName)

@@ -16,6 +16,7 @@ public class PlayRandomConnectionManager : MonoBehaviourPunCallbacks
     private int counter;
     void Start()
     {
+        MainCanvas.GetComponent<Animator>().SetTrigger("Scene_start");
         counter = 0;
         isWaitingForPlayer = false;
         LoadingPanel.SetActive(true);
@@ -64,14 +65,16 @@ public class PlayRandomConnectionManager : MonoBehaviourPunCallbacks
         PhotonNetwork.LeaveRoom();
         if(PhotonNetwork.IsConnected)
         PhotonNetwork.Disconnect();
-        SceneManager.LoadScene("MainMenu");
+        StartCoroutine(CoroutineLoadScene("MainMenu"));
+        //SceneManager.LoadScene("MainMenu");
     }
     public void OnTryAgainClick()
     {
         counter = 0;
         isWaitingForPlayer = false;
         LoadingPanel.SetActive(true);
-        NotLoadingPanel.SetActive(false);
+        StartCoroutine(CoroutineDeactiveObject(NotLoadingPanel, "NLP_leave"));
+        //NotLoadingPanel.SetActive(false);
         try
         {
             PhotonNetwork.ConnectUsingSettings();
@@ -94,6 +97,7 @@ public class PlayRandomConnectionManager : MonoBehaviourPunCallbacks
         base.OnDisconnected(cause);
         Debug.Log(cause);
         LoadingPanel.SetActive(false);
+        MainCanvas.GetComponent<Animator>().SetTrigger("NLP_enter");
         NotLoadingPanel.SetActive(true);
     }
 
@@ -109,6 +113,7 @@ public class PlayRandomConnectionManager : MonoBehaviourPunCallbacks
         Debug.Log(message);
         base.OnCreateRoomFailed(returnCode, message);
         LoadingPanel.SetActive(false);
+        MainCanvas.GetComponent<Animator>().SetTrigger("NLP_enter");
         NotLoadingPanel.SetActive(true);
     }
     public override void OnCreatedRoom()
@@ -127,7 +132,8 @@ public class PlayRandomConnectionManager : MonoBehaviourPunCallbacks
         {
             Photon.Realtime.Player masterPlayer = PhotonNetwork.CurrentRoom.GetPlayer( PhotonNetwork.CurrentRoom.MasterClientId);
             PlayerPrefs.SetString(GetComponent<Constants>().ONLINEGAMEOPPONENTPLAYERNAME, masterPlayer.NickName);
-            SceneManager.LoadScene("OnlineGame");
+            StartCoroutine(CoroutineLoadScene("OnlineGame"));
+            //SceneManager.LoadScene("OnlineGame");
         }
     }
     public override void OnPlayerEnteredRoom(Photon.Realtime.Player newPlayer)
@@ -135,7 +141,8 @@ public class PlayRandomConnectionManager : MonoBehaviourPunCallbacks
         base.OnPlayerEnteredRoom(newPlayer);
         string opponentName = newPlayer.NickName;
         PlayerPrefs.SetString(GetComponent<Constants>().ONLINEGAMEOPPONENTPLAYERNAME, opponentName);
-        SceneManager.LoadScene("OnlineGame");
+        StartCoroutine(CoroutineLoadScene("OnlineGame"));
+        //SceneManager.LoadScene("OnlineGame");
 
     }
     public IEnumerator CoroutineLoadScene(string sceneName)

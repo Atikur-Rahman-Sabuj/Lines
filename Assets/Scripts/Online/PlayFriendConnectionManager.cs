@@ -195,7 +195,8 @@ public class PlayFriendConnectionManager : MonoBehaviourPunCallbacks
         {
             Photon.Realtime.Player masterPlayer = PhotonNetwork.CurrentRoom.GetPlayer(PhotonNetwork.CurrentRoom.MasterClientId);
             PlayerPrefs.SetString(GetComponent<Constants>().ONLINEGAMEOPPONENTPLAYERNAME, masterPlayer.NickName);
-            SceneManager.LoadScene("OnlineGame");
+            StartCoroutine(CoroutineLoadScene("OnlineGame"));
+            //SceneManager.LoadScene("OnlineGame");
         }
     }
     public override void OnPlayerEnteredRoom(Photon.Realtime.Player newPlayer)
@@ -203,7 +204,8 @@ public class PlayFriendConnectionManager : MonoBehaviourPunCallbacks
         base.OnPlayerEnteredRoom(newPlayer);
         string opponentName = newPlayer.NickName;
         PlayerPrefs.SetString(GetComponent<Constants>().ONLINEGAMEOPPONENTPLAYERNAME, opponentName);
-        SceneManager.LoadScene("OnlineGame");
+        StartCoroutine(CoroutineLoadScene("OnlineGame"));
+        //SceneManager.LoadScene("OnlineGame");
 
     }
     private void ConnectToServer()
