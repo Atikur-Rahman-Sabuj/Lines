@@ -13,6 +13,7 @@ public class GameManager : MonoBehaviourPunCallbacks
     public GameObject Script;
     public Player PlayerPrefab;
     [Header("UI")]
+    public GameObject MainCanvas;
     public GameObject PlayerLabel1;
     public GameObject PlayerLabel2;
     public GameObject PlayerScore1;
@@ -27,6 +28,7 @@ public class GameManager : MonoBehaviourPunCallbacks
     public GameObject PlayAgainPanel;
     public TextMeshProUGUI TimeText;
     public TextMeshProUGUI TimePanelText;
+    public TextMeshProUGUI ResultText;
     [HideInInspector]
     public Player LocalPlayer;
     public bool Turn;
@@ -54,6 +56,7 @@ public class GameManager : MonoBehaviourPunCallbacks
     // Use this for initialization
     void Start()
     {
+        MainCanvas.GetComponent<Animator>().SetTrigger("Scene_start");
         TotalBox = 4;
         GotoHomePanel.SetActive(false);
         OpponentLeftGamePanel.SetActive(false);
@@ -223,19 +226,28 @@ public class GameManager : MonoBehaviourPunCallbacks
     }
     public void OnWin(int ownScore, int opponentScore)
     {
+        ResultText.text = "Congratulations! You won!";
+        MainCanvas.GetComponent<Animator>().SetTrigger("RP_enter");
         WinPanel.SetActive(true);
     }
     public void OnLoose(int ownScore, int opponenetScore)
     {
-        LoosePanel.SetActive(true);
+        ResultText.text = "Better luck next time!";
+        MainCanvas.GetComponent<Animator>().SetTrigger("RP_enter");
+        WinPanel.SetActive(true);
+        //LoosePanel.SetActive(true);
     }
     public void OnDraw(int ownScore, int opponenetScore)
     {
-        DrawPanel.SetActive(true);
+        ResultText.text = "Congratulations! You both won!";
+        MainCanvas.GetComponent<Animator>().SetTrigger("RP_enter");
+        WinPanel.SetActive(true);
+        //DrawPanel.SetActive(true);
     }
     public void OnEndGameHomeClick()
     {
-        SceneManager.LoadScene("MainMenu");
+        StartCoroutine(CoroutineLoadScene("MainMenu"));
+       // SceneManager.LoadScene("MainMenu");
     }
     public void OnPlayAgainSendRequest()
     {
@@ -243,15 +255,16 @@ public class GameManager : MonoBehaviourPunCallbacks
     }
     public void OnPlayAgainReceiveRequest()
     {
+        MainCanvas.GetComponent<Animator>().SetTrigger("PARP_enter");
         PlayAgainPanel.SetActive(true);
     }
     public void OnPlayAgainAcceptRequest()
     {
         LocalPlayer.PlayAgainAcceptedRequestConfirmationSend();
-        WinPanel.SetActive(false);
-        LoosePanel.SetActive(false);
-        DrawPanel.SetActive(false);
-        PlayAgainPanel.SetActive(false);
+        StartCoroutine(CoroutineDeactiveObject(WinPanel, "RP_leave"));
+        StartCoroutine(CoroutineDeactiveObject(PlayAgainPanel, "PARP_leave"));
+        //WinPanel.SetActive(false);
+        //PlayAgainPanel.SetActive(false);
         OwnScore = 0;
         OpponentScore = 0;
         TmProSetText(PlayerScore1, "0");
@@ -260,8 +273,8 @@ public class GameManager : MonoBehaviourPunCallbacks
     }
     public void OnPlayAgainRequestDeclined()
     {
-        WinPanel.SetActive(false);
-        
+        StartCoroutine(CoroutineDeactiveObject(PlayAgainPanel, "PARP_leave"));
+        //PlayAgainPanel.SetActive(false);
     }
     public void OnPlayAgainOpponentRequestAccepted()
     {
@@ -281,6 +294,7 @@ public class GameManager : MonoBehaviourPunCallbacks
     }
     public void OnHomeButtonClick()
     {
+        MainCanvas.GetComponent<Animator>().SetTrigger("HCP_enter");
         GotoHomePanel.SetActive(true);
     }
     public void OnHomeConfirm()
@@ -290,6 +304,20 @@ public class GameManager : MonoBehaviourPunCallbacks
     }
     public void OnGoHomeCancel()
     {
-        GotoHomePanel.SetActive(false);
+        StartCoroutine(CoroutineDeactiveObject(GotoHomePanel, "HCP_leave"));
+        //GotoHomePanel.SetActive(false);
+    }
+
+    public IEnumerator CoroutineLoadScene(string sceneName)
+    {
+        MainCanvas.GetComponent<Animator>().SetTrigger("Scene_end");
+        yield return new WaitForSeconds(1f);
+        SceneManager.LoadScene(sceneName);
+    }
+    public IEnumerator CoroutineDeactiveObject(GameObject panelName, string triggetName)
+    {
+        MainCanvas.GetComponent<Animator>().SetTrigger(triggetName);
+        yield return new WaitForSeconds(.5f);
+        panelName.SetActive(false);
     }
 }

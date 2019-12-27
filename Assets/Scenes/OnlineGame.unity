@@ -662,6 +662,7 @@ MonoBehaviour:
   Script: {fileID: 1736526542}
   PlayerPrefab: {fileID: 3503856861275678045, guid: 4a01565361a5fd34bb660332543846c3,
     type: 3}
+  MainCanvas: {fileID: 395150603}
   PlayerLabel1: {fileID: 1086423639}
   PlayerLabel2: {fileID: 305643830}
   PlayerScore1: {fileID: 824093350}
@@ -676,6 +677,7 @@ MonoBehaviour:
   PlayAgainPanel: {fileID: 654358361}
   TimeText: {fileID: 1558985749}
   TimePanelText: {fileID: 1834117280}
+  ResultText: {fileID: 1451419250}
   LocalPlayer: {fileID: 0}
   Turn: 0
   OwnScore: 0
