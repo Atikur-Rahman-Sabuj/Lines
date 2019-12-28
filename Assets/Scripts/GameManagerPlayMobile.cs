@@ -82,24 +82,29 @@ public class GameManagerPlayMobile : MonoBehaviour
 
         if (TotalScore <= (FirstPlayerScore + SecondPlayerScore))
         {
-            MainCanvas.GetComponent<Animator>().SetTrigger("WP_enter");
-            if (FirstPlayerScore > SecondPlayerScore)
-            {
-                WinningText.SetText(FirstPlayerName + " Won!!");
-                WinningPanel.SetActive(true);
-            }
-            else if (SecondPlayerScore > FirstPlayerScore)
-            {
-                WinningText.SetText(SecondPlayerName + " Won!!");
-                WinningPanel.SetActive(true);
-            }
-            else
-            {
-                WinningText.SetText("Congratulations, You both won!!");
-                WinningPanel.SetActive(true);
-            }
+            StartCoroutine(CoroutineShowResult());
         }
 
+    }
+    public IEnumerator CoroutineShowResult()
+    {
+        yield return new WaitForSeconds(2f);
+        MainCanvas.GetComponent<Animator>().SetTrigger("WP_enter");
+        if (FirstPlayerScore > SecondPlayerScore)
+        {
+            WinningText.SetText(FirstPlayerName + " Won!!");
+            WinningPanel.SetActive(true);
+        }
+        else if (SecondPlayerScore > FirstPlayerScore)
+        {
+            WinningText.SetText(SecondPlayerName + " Won!!");
+            WinningPanel.SetActive(true);
+        }
+        else
+        {
+            WinningText.SetText("Congratulations, You both won!!");
+            WinningPanel.SetActive(true);
+        }
     }
     public IEnumerator CoroutineLoadScene(string sceneName)
     {

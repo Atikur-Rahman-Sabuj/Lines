@@ -406,7 +406,7 @@ public class DrawLine : MonoBehaviour
     public IEnumerator CoroutineMobileMove()
     {
         Debug.Log("inside coroutine");
-        yield return new WaitForSeconds(1f);
+        yield return new WaitForSeconds(2f);
         ComputerTurn();
        // Turn.GetComponent<TextMeshProUGUI>().SetText("Computer turn");
     }

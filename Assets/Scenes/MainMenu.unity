@@ -1951,6 +1951,7 @@ MonoBehaviour:
   InputFriendPlayer1: {fileID: 1884170783}
   InputFriendPlayer2: {fileID: 275464043}
   InputOnlinePlayer: {fileID: 1422506240}
+  HomeButton: {fileID: 993018886}
 --- !u!4 &502647009
 Transform:
   m_ObjectHideFlags: 0

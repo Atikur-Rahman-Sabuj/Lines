@@ -18,6 +18,8 @@ public class MainMenu : MonoBehaviour
     public TMP_InputField InputFriendPlayer1;
     public TMP_InputField InputFriendPlayer2;
     public TMP_InputField InputOnlinePlayer;
+    [Header("Buttons")]
+    public GameObject HomeButton;
 
     private Constants constans;
 
@@ -31,7 +33,17 @@ public class MainMenu : MonoBehaviour
         ParentCanvas.GetComponent<Animator>().SetTrigger("Scene_start");
         
     }
-
+    private void Update()
+    {
+        if (MainCanvas.activeSelf)
+        {
+            HomeButton.SetActive(false);
+        }
+        else
+        {
+            HomeButton.SetActive(true);
+        }
+    }
     public void OnPlayWithMobileClick()
     {
         FindObjectOfType<AudioManager>().Play("button_click");
@@ -134,7 +146,7 @@ public class MainMenu : MonoBehaviour
     public IEnumerator CoroutineLoadScene(string sceneName)
     {
         ParentCanvas.GetComponent<Animator>().SetTrigger("Scene_end");
-        yield return new WaitForSeconds(1f);
+        yield return new WaitForSeconds(.5f);
         SceneManager.LoadScene(sceneName);
     }
 

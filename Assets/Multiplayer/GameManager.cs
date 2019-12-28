@@ -203,19 +203,7 @@ public class GameManager : MonoBehaviourPunCallbacks
     {
         if ((OwnScore + OpponentScore) >= TotalBox)
         {
-            if (OwnScore > OpponentScore)
-            {
-                OnWin(OwnScore, OpponentScore);
-            }
-            else if (OwnScore < OpponentScore)
-            {
-                OnLoose(OwnScore, OpponentScore);
-            }
-            else
-            {
-                OnDraw(OwnScore, OpponentScore);
-            }
-            TimeText.gameObject.SetActive(false);
+            StartCoroutine(CoroutineShowResult());
         }
     }
     public void OnOwnScoreUpdate()
@@ -235,14 +223,29 @@ public class GameManager : MonoBehaviourPunCallbacks
         ResultText.text = "Better luck next time!";
         MainCanvas.GetComponent<Animator>().SetTrigger("RP_enter");
         WinPanel.SetActive(true);
-        //LoosePanel.SetActive(true);
     }
     public void OnDraw(int ownScore, int opponenetScore)
     {
         ResultText.text = "Congratulations! You both won!";
         MainCanvas.GetComponent<Animator>().SetTrigger("RP_enter");
         WinPanel.SetActive(true);
-        //DrawPanel.SetActive(true);
+    }
+    public IEnumerator CoroutineShowResult()
+    {
+        yield return new WaitForSeconds(2f);
+        if (OwnScore > OpponentScore)
+        {
+            OnWin(OwnScore, OpponentScore);
+        }
+        else if (OwnScore < OpponentScore)
+        {
+            OnLoose(OwnScore, OpponentScore);
+        }
+        else
+        {
+            OnDraw(OwnScore, OpponentScore);
+        }
+        TimeText.gameObject.SetActive(false);
     }
     public void OnEndGameHomeClick()
     {

@@ -14,10 +14,12 @@ public class PlayRandomConnectionManager : MonoBehaviourPunCallbacks
     private string PlayerName;
     private bool isWaitingForPlayer;
     private int counter;
+    private bool isGoingHome;
     void Start()
     {
         MainCanvas.GetComponent<Animator>().SetTrigger("Scene_start");
         counter = 0;
+        isGoingHome = false;
         isWaitingForPlayer = false;
         LoadingPanel.SetActive(true);
         NotLoadingPanel.SetActive(false);
@@ -61,10 +63,12 @@ public class PlayRandomConnectionManager : MonoBehaviourPunCallbacks
 
     public void OnHomeClick()
     {
+        isGoingHome = true;
         if (PhotonNetwork.InRoom)
         PhotonNetwork.LeaveRoom();
         if(PhotonNetwork.IsConnected)
         PhotonNetwork.Disconnect();
+        
         StartCoroutine(CoroutineLoadScene("MainMenu"));
         //SceneManager.LoadScene("MainMenu");
     }
@@ -96,9 +100,13 @@ public class PlayRandomConnectionManager : MonoBehaviourPunCallbacks
     {
         base.OnDisconnected(cause);
         Debug.Log(cause);
-        LoadingPanel.SetActive(false);
-        MainCanvas.GetComponent<Animator>().SetTrigger("NLP_enter");
-        NotLoadingPanel.SetActive(true);
+        if (!isGoingHome)
+        {
+            LoadingPanel.SetActive(false);
+            MainCanvas.GetComponent<Animator>().SetTrigger("NLP_enter");
+            NotLoadingPanel.SetActive(true);
+        }
+        
     }
 
     public override void OnJoinRandomFailed(short returnCode, string message)
