@@ -45,7 +45,13 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   sounds:
   - name: button_click
-    clip: {fileID: 8300000, guid: ec289911adc8b344dbd553249cc0612b, type: 3}
+    clip: {fileID: 8300000, guid: 45a9b1664fcc0164299f37727f9b85c9, type: 3}
+    volume: 1
+    pitch: 1
+    source: {fileID: 0}
+    loop: 0
+  - name: draw_line
+    clip: {fileID: 8300000, guid: eafaea4bace426345af8ac2ecfa81475, type: 3}
     volume: 1
     pitch: 1
     source: {fileID: 0}

@@ -142,6 +142,10 @@ public class MainMenu : MonoBehaviour
         StartCoroutine(CoroutineLoadScene("PlayFriend"));
        // SceneManager.LoadScene("PlayFriend");
     }
+    public void OnSettingClick()
+    {
+        StartCoroutine(CoroutineLoadScene("Setting"));
+    }
 
     public IEnumerator CoroutineLoadScene(string sceneName)
     {

@@ -26,4 +26,7 @@ EditorBuildSettings:
   - enabled: 1
     path: Assets/Scenes/OnlinePlayFriendLobby.unity
     guid: 7a9a9bae8291a6c469e0f62a61d64a22
+  - enabled: 1
+    path: Assets/Scenes/Setting.unity
+    guid: d98ea7d72d7921740a2936522d60d418
   m_configObjects: {}

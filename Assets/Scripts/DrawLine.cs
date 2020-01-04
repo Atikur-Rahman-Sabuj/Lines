@@ -91,7 +91,8 @@ public class DrawLine : MonoBehaviour
                 LineObject.GetComponent<LineRenderer>().GetComponent<Renderer>().material.SetColor("_EmissionColor", playerManagement.Player2.Color);
             }
             LineObject.GetComponent<Animator>().Play("LineFadeAndShow");
-            
+            FindObjectOfType<AudioManager>().Play("draw_line");
+
         }
         public Boolean IsThisLine(Point firstPoint, Point secondPoint)
         {
