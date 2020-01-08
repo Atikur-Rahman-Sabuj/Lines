@@ -26,6 +26,14 @@ public class GameManagerPlayFriend : MonoBehaviour
     {
         FirstPlayerName = PlayerPrefs.GetString( Script.GetComponent<Constants>().FRIENDGAMEPLAYERNAME1);
         SecondPlayerName =  PlayerPrefs.GetString( Script.GetComponent<Constants>().FRIENDGAMEPLAYERNAME2);
+        if (FirstPlayerName.Equals("") || FirstPlayerName.Equals(null))
+        {
+            FirstPlayerName = "Player1";
+        }
+        if (SecondPlayerName.Equals("") || SecondPlayerName.Equals(null))
+        {
+            SecondPlayerName = "Player2";
+        }
         FirstPlayerNameO.SetText(FirstPlayerName);
         SecondPlayerNameO.SetText(SecondPlayerName);
         FirstPlayerScoreO.SetText("0");

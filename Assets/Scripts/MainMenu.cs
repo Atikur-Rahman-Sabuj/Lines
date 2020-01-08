@@ -84,7 +84,7 @@ public class MainMenu : MonoBehaviour
         FindObjectOfType<AudioManager>().Play("button_click");
         string name = InputOnlinePlayer.text;
         PlayerPrefs.SetString(GetComponent<Constants>().ONLINEGAMEPLAYERNAME, name);
-        PlayerPrefs.SetInt(GetComponent<Constants>().TOTALPOINTS, 3);
+        PlayerPrefs.SetInt(GetComponent<Constants>().TOTALPOINTS, 7);
         StartCoroutine(CoroutineLoadScene("OnlinePlayRandomLobby"));
         //SceneManager.LoadScene("OnlinePlayRandomLobby");
     }
@@ -93,7 +93,7 @@ public class MainMenu : MonoBehaviour
         FindObjectOfType<AudioManager>().Play("button_click");
         string name = InputOnlinePlayer.text;
         PlayerPrefs.SetString(GetComponent<Constants>().ONLINEGAMEPLAYERNAME, name);
-        PlayerPrefs.SetInt(GetComponent<Constants>().TOTALPOINTS, 3);
+        PlayerPrefs.SetInt(GetComponent<Constants>().TOTALPOINTS, 7);
         StartCoroutine(CoroutineLoadScene("OnlinePlayFriendLobby"));
         //SceneManager.LoadScene("OnlinePlayFriendLobby");
 
@@ -104,7 +104,7 @@ public class MainMenu : MonoBehaviour
         string name = InputMobilePlayer.text;
 
         PlayerPrefs.SetString(GetComponent<Constants>().MOBILEGAMEPLAYERNAME, name);
-        PlayerPrefs.SetInt(GetComponent<Constants>().TOTALPOINTS, 2);
+        PlayerPrefs.SetInt(GetComponent<Constants>().TOTALPOINTS, 6);
         StartCoroutine(CoroutineLoadScene("PlayMobile"));
         //SceneManager.LoadScene("PlayMobile");
     }
@@ -126,7 +126,7 @@ public class MainMenu : MonoBehaviour
 
         PlayerPrefs.SetString(GetComponent<Constants>().FRIENDGAMEPLAYERNAME1, name1);
         PlayerPrefs.SetString(GetComponent<Constants>().FRIENDGAMEPLAYERNAME2, name2);
-        PlayerPrefs.SetInt(GetComponent<Constants>().TOTALPOINTS, 2);
+        PlayerPrefs.SetInt(GetComponent<Constants>().TOTALPOINTS, 6);
         StartCoroutine(CoroutineLoadScene("PlayFriend"));
         //SceneManager.LoadScene("PlayFriend");
     }

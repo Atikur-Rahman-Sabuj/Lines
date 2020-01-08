@@ -25,6 +25,10 @@ public class GameManagerPlayMobile : MonoBehaviour
     private void Start()
     {
         FirstPlayerName = PlayerPrefs.GetString(Script.GetComponent<Constants>().MOBILEGAMEPLAYERNAME);
+        if (FirstPlayerName.Equals("")|| FirstPlayerName.Equals(null))
+        {
+            FirstPlayerName = "Player1";
+        }
         SecondPlayerName = "Mobile";
         FirstPlayerNameO.SetText(FirstPlayerName);
         SecondPlayerNameO.SetText(SecondPlayerName);
