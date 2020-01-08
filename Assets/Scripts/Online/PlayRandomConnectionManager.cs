@@ -63,6 +63,7 @@ public class PlayRandomConnectionManager : MonoBehaviourPunCallbacks
 
     public void OnHomeClick()
     {
+        FindObjectOfType<AudioManager>().Play("button_click");
         isGoingHome = true;
         if (PhotonNetwork.InRoom)
         PhotonNetwork.LeaveRoom();
@@ -74,6 +75,7 @@ public class PlayRandomConnectionManager : MonoBehaviourPunCallbacks
     }
     public void OnTryAgainClick()
     {
+        FindObjectOfType<AudioManager>().Play("button_click");
         counter = 0;
         isWaitingForPlayer = false;
         LoadingPanel.SetActive(true);

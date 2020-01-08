@@ -1300,6 +1300,32 @@ RectTransform:
   m_AnchoredPosition: {x: 0, y: 0}
   m_SizeDelta: {x: 0, y: 0}
   m_Pivot: {x: 0, y: 0}
+--- !u!1 &1317591035 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 6569303408655569350, guid: a0311edcfcc7362479a918bf61437e35,
+    type: 3}
+  m_PrefabInstance: {fileID: 1920995140}
+  m_PrefabAsset: {fileID: 0}
+--- !u!114 &1317591038
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1317591035}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 9eeab976490d7cc43801247b28d5d170, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  MOBILEGAMEPLAYERNAME: mobilegameplayername
+  FRIENDGAMEPLAYERNAME1: friendgameplayername1
+  FRIENDGAMEPLAYERNAME2: friendgameplayername2
+  ONLINEGAMEPLAYERNAME: onlinegameplayername
+  ONLINEGAMEOPPONENTPLAYERNAME: onlinegameopponentplayername
+  TOTALPOINTS: totapoints
+  SETTINGSOUND: settingsound
+  SETTINGNOTIFICATION: settingnotification
 --- !u!1 &1373308980
 GameObject:
   m_ObjectHideFlags: 0

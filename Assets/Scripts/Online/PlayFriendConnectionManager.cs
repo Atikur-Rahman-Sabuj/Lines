@@ -62,6 +62,7 @@ public class PlayFriendConnectionManager : MonoBehaviourPunCallbacks
 
     public void OnHomeClick()
     {
+        FindObjectOfType<AudioManager>().Play("button_click");
         isGoingHome = true;
         if (PhotonNetwork.InRoom)
             PhotonNetwork.LeaveRoom();
@@ -72,6 +73,7 @@ public class PlayFriendConnectionManager : MonoBehaviourPunCallbacks
     }
     public void OnTryAgainClick()
     {
+        FindObjectOfType<AudioManager>().Play("button_click");
         FailedPanel.SetActive(false);
         MainCanvas.GetComponent<Animator>().SetTrigger("IP_enter");
         InitialPanel.SetActive(true);
@@ -84,6 +86,7 @@ public class PlayFriendConnectionManager : MonoBehaviourPunCallbacks
     //event when user click on create game on initial plane
     public void OnInitialCreateGameClick()
     {
+        FindObjectOfType<AudioManager>().Play("button_click");
 
         try
         {
@@ -104,6 +107,7 @@ public class PlayFriendConnectionManager : MonoBehaviourPunCallbacks
     //event when user click on join game on initial plane
     public void OnJoinGameInitialClick()
     {
+        FindObjectOfType<AudioManager>().Play("button_click");
         try
         {
             if (!PhotonNetwork.IsConnected)
@@ -121,6 +125,7 @@ public class PlayFriendConnectionManager : MonoBehaviourPunCallbacks
     }
     public void OnCreateGameClick()
     {
+        FindObjectOfType<AudioManager>().Play("button_click");
         GameName = InputGameNameToCreate.text;
         if (GameName.Equals(""))
             return;
@@ -131,6 +136,7 @@ public class PlayFriendConnectionManager : MonoBehaviourPunCallbacks
     }
     public void OnJoinGameclick()
     {
+        FindObjectOfType<AudioManager>().Play("button_click");
         GameName = InputGameNameToJoin.text;
         if (GameName.Equals(""))
             return;
@@ -176,7 +182,8 @@ public class PlayFriendConnectionManager : MonoBehaviourPunCallbacks
 
     public void OnCreateAgainClick()
     {
-        if(PhotonNetwork.InRoom)
+        FindObjectOfType<AudioManager>().Play("button_click");
+        if (PhotonNetwork.InRoom)
             PhotonNetwork.LeaveRoom();
         GameCreatedPanel.SetActive(false);
         MainCanvas.GetComponent<Animator>().SetTrigger("IP_enter");

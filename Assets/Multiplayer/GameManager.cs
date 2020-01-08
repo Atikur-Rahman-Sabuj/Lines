@@ -233,6 +233,7 @@ public class GameManager : MonoBehaviourPunCallbacks
     public IEnumerator CoroutineShowResult()
     {
         yield return new WaitForSeconds(2f);
+        FindObjectOfType<AudioManager>().Play("game_end");
         if (OwnScore > OpponentScore)
         {
             OnWin(OwnScore, OpponentScore);

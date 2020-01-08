@@ -7,6 +7,7 @@ public class MenuPlayMobile : MonoBehaviour
 {
     public void OnInsideGameHomeClick()
     {
+        FindObjectOfType<AudioManager>().Play("button_click");
         SceneManager.LoadScene("MainMenu");
     }
 }

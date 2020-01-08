@@ -145,7 +145,8 @@ public class DrawLine : MonoBehaviour
             {
                 BoxObject.GetComponent<Renderer>().material.SetColor("_EmissionColor", playerManagement.Player2.Color);
             }
-            
+            FindObjectOfType<AudioManager>().Play("draw_box");
+
             BoxObject.GetComponent<Animator>().Play("BoxAnimation");
         }
         public Boolean IsLineOfThisBox(Line line)

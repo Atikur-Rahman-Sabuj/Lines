@@ -144,6 +144,7 @@ public class MainMenu : MonoBehaviour
     }
     public void OnSettingClick()
     {
+        FindObjectOfType<AudioManager>().Play("button_click");
         StartCoroutine(CoroutineLoadScene("Setting"));
     }
 

@@ -37,20 +37,24 @@ public class GameManagerPlayMobile : MonoBehaviour
     }
     public void onHomeClick()
     {
+        FindObjectOfType<AudioManager>().Play("button_click");
         MainCanvas.GetComponent<Animator>().SetTrigger("HCP_enter");
         ConfirmHomePanel.SetActive(true);
     }
     public void onGoHomeConfirm()
     {
+        FindObjectOfType<AudioManager>().Play("button_click");
         StartCoroutine(CoroutineLoadScene("MainMenu"));
     }
     public void onGoHomeCancel()
     {
+        FindObjectOfType<AudioManager>().Play("button_click");
         StartCoroutine(CoroutineDeactiveObject(ConfirmHomePanel, "HCP_leave"));
     }
 
     public void onPlayAgainClick()
     {
+        FindObjectOfType<AudioManager>().Play("button_click");
         //StartCoroutine(CoroutineDeactiveObject(WinningPanel, "WP_leave"));
         StartCoroutine(CoroutineLoadScene(SceneManager.GetActiveScene().name));
         //SceneManager.LoadScene(SceneManager.GetActiveScene().name);
@@ -90,6 +94,7 @@ public class GameManagerPlayMobile : MonoBehaviour
     {
         yield return new WaitForSeconds(2f);
         MainCanvas.GetComponent<Animator>().SetTrigger("WP_enter");
+        FindObjectOfType<AudioManager>().Play("game_end");
         if (FirstPlayerScore > SecondPlayerScore)
         {
             WinningText.SetText(FirstPlayerName + " Won!!");

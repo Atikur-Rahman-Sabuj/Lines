@@ -45,6 +45,7 @@ public class Setting : MonoBehaviour
 
     public void OnSoundButtonClick()
     {
+        FindObjectOfType<AudioManager>().Play("button_click");
         Debug.Log("Click");
         PlayerPrefs.SetInt(GetComponent<Constants>().SETTINGSOUND, IsSoundOn?0:1);
         IsSoundOn = !IsSoundOn;
@@ -59,10 +60,12 @@ public class Setting : MonoBehaviour
     }
     public void OnHomeClick()
     {
+        FindObjectOfType<AudioManager>().Play("button_click");
         StartCoroutine(CoroutineLoadScene("MainMenu"));
     }
     public void OnNotificationButtonClick()
     {
+        FindObjectOfType<AudioManager>().Play("button_click");
         Debug.Log("Click");
         PlayerPrefs.SetInt(GetComponent<Constants>().SETTINGNOTIFICATION, IsNotificationOn ? 0 : 1);
         IsNotificationOn = !IsNotificationOn;

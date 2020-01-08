@@ -10,6 +10,7 @@ GameObject:
   m_Component:
   - component: {fileID: 6569303408655569344}
   - component: {fileID: 6569303408655569345}
+  - component: {fileID: -2479551873864755932}
   m_Layer: 0
   m_Name: AudioManager
   m_TagString: Untagged
@@ -56,3 +57,35 @@ MonoBehaviour:
     pitch: 1
     source: {fileID: 0}
     loop: 0
+  - name: draw_box
+    clip: {fileID: 8300000, guid: c2a085aa6ad922748a6d3031bd6b974d, type: 3}
+    volume: 1
+    pitch: 1
+    source: {fileID: 0}
+    loop: 0
+  - name: game_end
+    clip: {fileID: 8300000, guid: 086e348b055c050459431d6c3247ff51, type: 3}
+    volume: 1
+    pitch: 1
+    source: {fileID: 0}
+    loop: 0
+--- !u!114 &-2479551873864755932
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6569303408655569350}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 9eeab976490d7cc43801247b28d5d170, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  MOBILEGAMEPLAYERNAME: mobilegameplayername
+  FRIENDGAMEPLAYERNAME1: friendgameplayername1
+  FRIENDGAMEPLAYERNAME2: friendgameplayername2
+  ONLINEGAMEPLAYERNAME: onlinegameplayername
+  ONLINEGAMEOPPONENTPLAYERNAME: onlinegameopponentplayername
+  TOTALPOINTS: totapoints
+  SETTINGSOUND: settingsound
+  SETTINGNOTIFICATION: settingnotification

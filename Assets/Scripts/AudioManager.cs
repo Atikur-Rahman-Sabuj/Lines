@@ -38,6 +38,10 @@ public class AudioManager : MonoBehaviour
 
     public void Play(string name)
     {
+        if (PlayerPrefs.GetInt(GetComponent<Constants>().SETTINGSOUND,1)==0)
+        {
+            return;
+        }
         Sound s = Array.Find(sounds, sound => sound.name == name);
         if(s == null)
         {
