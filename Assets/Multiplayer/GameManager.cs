@@ -57,7 +57,7 @@ public class GameManager : MonoBehaviourPunCallbacks
     void Start()
     {
         MainCanvas.GetComponent<Animator>().SetTrigger("Scene_start");
-        TotalBox = 4;
+        TotalBox = 36;
         GotoHomePanel.SetActive(false);
         OpponentLeftGamePanel.SetActive(false);
         PlayerName = PlayerPrefs.GetString(GetComponent<Constants>().ONLINEGAMEPLAYERNAME, "");
@@ -274,6 +274,7 @@ public class GameManager : MonoBehaviourPunCallbacks
         TmProSetText(PlayerScore1, "0");
         TmProSetText(PlayerScore2, "0");
         drawLine.OnlineRestart();
+        InitializeTime();
     }
     public void OnPlayAgainRequestDeclined()
     {
@@ -291,6 +292,7 @@ public class GameManager : MonoBehaviourPunCallbacks
         TmProSetText(PlayerScore1, "0");
         TmProSetText(PlayerScore2, "0");
         drawLine.OnlineRestart();
+        InitializeTime();
     }
     void TmProSetText(GameObject gameObject, string value)
     {
