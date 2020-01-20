@@ -155,5 +155,19 @@ public class MainMenu : MonoBehaviour
         SceneManager.LoadScene(sceneName);
     }
 
+    public void OnSaveProgressClick()
+    {
+        SaveSystem.SaveProgress("type1", 20, 14);
+    } 
+    public void OnLoadProgressClick()
+    {
+        List<PlayerData> playerDatas = SaveSystem.LoadProgress();
+        playerDatas.ForEach(playerData =>
+        {
+            Debug.Log(playerData.gameType);
+        });
+        
+    }
+
 
 }
