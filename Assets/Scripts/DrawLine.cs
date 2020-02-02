@@ -25,17 +25,10 @@ public class DrawLine : MonoBehaviour
     public Boolean IsPlayingOnline;
     public GameObject GameManager;
 
-    [Header("UI")]
-    //public GameObject PlayerLabel1;
-    //public GameObject PlayerLabel2;
-   // public GameObject PlayerScore1;
-   // public GameObject PlayerScore2;
-   // public GameObject Score;
-  //  public GameObject Turn;
 
 
     public List<GameObject> lines = new List<GameObject>();
-    private bool hasPreviousClick = false;
+ //   private bool hasPreviousClick = false;
     public bool isFirstPlayerTurn = true;
     public int LineDistance = 5;
     public Material NotClicked;
@@ -306,47 +299,48 @@ public class DrawLine : MonoBehaviour
         }
     }
 
-    public void OnResetClick()
-    {
-        //PlayerPrefs.SetInt("STotalPointInEachSide", 5);
-        SceneManager.LoadScene(SceneManager.GetActiveScene().name);
-    } 
+    //Dead code remove in future
+    //public void OnResetClick()
+    //{
+    //    //PlayerPrefs.SetInt("STotalPointInEachSide", 5);
+    //    SceneManager.LoadScene(SceneManager.GetActiveScene().name);
+    //} 
+    //Dead code remove in future
+    //public void OnPointClick(GameObject ClickObject)
+    //{
+    //    Point point = null;
+    //    for (int i = 0; i < Points.Count; i++)
+    //    {
+    //        for (int j = 0; j < Points[i].Count; j++)
+    //        {
+    //            if (Points[i][j].IsThisPoint(ClickObject))
+    //            {
+    //                point = Points[i][j];
+    //            }
+    //        }
+    //    }
 
-    public void OnPointClick(GameObject ClickObject)
-    {
-        Point point = null;
-        for (int i = 0; i < Points.Count; i++)
-        {
-            for (int j = 0; j < Points[i].Count; j++)
-            {
-                if (Points[i][j].IsThisPoint(ClickObject))
-                {
-                    point = Points[i][j];
-                }
-            }
-        }
+    //    if (!hasPreviousClick)
+    //    {
+    //        FirstClick(point);
+    //    }
+    //    else
+    //    {
+    //        if (previousClickedPoint == point)
+    //        {
+    //            RemoveClickedColor(previousClickedPoint);
+    //            hasPreviousClick = false;
+    //            previousClickedPoint = null;
+    //            Debug.Log("Already Click in this");
+    //        }
 
-        if (!hasPreviousClick)
-        {
-            FirstClick(point);
-        }
-        else
-        {
-            if (previousClickedPoint == point)
-            {
-                RemoveClickedColor(previousClickedPoint);
-                hasPreviousClick = false;
-                previousClickedPoint = null;
-                Debug.Log("Already Click in this");
-            }
-
-            else
-            {
-                SecondClick(point);
-                Debug.Log("Line Drawn");
-            }
-        }
-    }
+    //        else
+    //        {
+    //            SecondClick(point);
+    //            Debug.Log("Line Drawn");
+    //        }
+    //    }
+    //}
 
 
     private void FirstClick(Point point)
@@ -356,7 +350,7 @@ public class DrawLine : MonoBehaviour
             RemoveClickedColor(previousClickedPoint);
         }
         previousClickedPoint = point;
-        hasPreviousClick = true;
+       // hasPreviousClick = true;
         ApplyClickedColor(point);
     }
     private void SecondClick(Point clickPoint)
@@ -392,7 +386,7 @@ public class DrawLine : MonoBehaviour
         isFirstPlayerTurn = !isFirstPlayerTurn;
        // RemoveClickedColor(previousClickedPoint);
         previousClickedPoint = null;
-        hasPreviousClick = false;
+        //hasPreviousClick = false;
         //StartCoroutine(CoroutineMobileSecondMove());
         if (isFirstPlayerTurn)
         {
@@ -409,7 +403,8 @@ public class DrawLine : MonoBehaviour
     {
         Debug.Log("inside coroutine");
         yield return new WaitForSeconds(2f);
-        ComputerTurn();
+        GetComponent<MobileGameBrain>().ComputerTurnMedium(Boxes);
+        //ComputerTurnEasy();
        // Turn.GetComponent<TextMeshProUGUI>().SetText("Computer turn");
     }
     public void OnlineDrawLine(Vector3 startPoint, Vector3 endPoint)
@@ -608,7 +603,7 @@ public class DrawLine : MonoBehaviour
     {
         point.PointObject.GetComponent<Renderer>().material.SetColor("_EmissionColor", Color.white);
     }
-    private void ComputerTurn()
+    private void ComputerTurnEasy()
     {
         Boolean gotAMove = false;
         Box box= null;
@@ -623,12 +618,12 @@ public class DrawLine : MonoBehaviour
                     box = Boxes[i][j];
                     
                     break;
-                }
-                if (gotAMove)
-                {
-                    break;
-                }
-            }   
+                }   
+            }
+            if (gotAMove)
+            {
+                break;
+            }
         }
         
         if (gotAMove)
@@ -646,6 +641,82 @@ public class DrawLine : MonoBehaviour
                     gotAMove = true;
                     box = Boxes[i][j];
                     
+                    break;
+                }
+            }
+            if (gotAMove)
+            {
+                break;
+            }
+        }
+        if (gotAMove)
+        {
+            ComputerCompleteBox(box);
+            return;
+        }
+        //if not go for box that has two line drawn
+        for (int i = 0; i < Boxes.Count; i++)
+        {
+            for (int j = 0; j < Boxes[i].Count; j++)
+            {
+                if (Boxes[i][j].TotalLineDrawn() < 4)
+                {
+                    gotAMove = true;
+                    box = Boxes[i][j];
+                    
+                    break;
+                }
+            }
+            if (gotAMove)
+            {
+                break;
+            }
+        }
+        if (gotAMove)
+        {
+            ComputerCompleteBox(box);
+            return;
+        }
+
+    }
+    private void ComputerTurnMedium()
+    {
+        Boolean gotAMove = false;
+        Box box = null;
+        //check if can complete a box
+        for (int i = 0; i < Boxes.Count; i++)
+        {
+            for (int j = 0; j < Boxes[i].Count; j++)
+            {
+                if (Boxes[i][j].TotalLineDrawn() == 3)
+                {
+                    gotAMove = true;
+                    box = Boxes[i][j];
+
+                    break;
+                }
+                if (gotAMove)
+                {
+                    break;
+                }
+            }
+        }
+
+        if (gotAMove)
+        {
+            ComputerCompleteBox(box);
+            return;
+        }
+        //find a box that has less then 2 lines to drawn
+        for (int i = 0; i < Boxes.Count; i++)
+        {
+            for (int j = 0; j < Boxes[i].Count; j++)
+            {
+                if (Boxes[i][j].TotalLineDrawn() < 2)
+                {
+                    gotAMove = true;
+                    box = Boxes[i][j];
+
                     break;
                 }
                 if (gotAMove)
@@ -668,7 +739,7 @@ public class DrawLine : MonoBehaviour
                 {
                     gotAMove = true;
                     box = Boxes[i][j];
-                    
+
                     break;
                 }
                 if (gotAMove)
@@ -682,9 +753,83 @@ public class DrawLine : MonoBehaviour
             ComputerCompleteBox(box);
             return;
         }
-
     }
-    private void ComputerCompleteBox(Box box)
+    private void ComputerTurnHard()
+    {
+        Boolean gotAMove = false;
+        Box box = null;
+        //check if can complete a box
+        for (int i = 0; i < Boxes.Count; i++)
+        {
+            for (int j = 0; j < Boxes[i].Count; j++)
+            {
+                if (Boxes[i][j].TotalLineDrawn() == 3)
+                {
+                    gotAMove = true;
+                    box = Boxes[i][j];
+
+                    break;
+                }
+                if (gotAMove)
+                {
+                    break;
+                }
+            }
+        }
+
+        if (gotAMove)
+        {
+            ComputerCompleteBox(box);
+            return;
+        }
+        //find a box that has less then 2 lines to drawn
+        for (int i = 0; i < Boxes.Count; i++)
+        {
+            for (int j = 0; j < Boxes[i].Count; j++)
+            {
+                if (Boxes[i][j].TotalLineDrawn() < 2)
+                {
+                    gotAMove = true;
+                    box = Boxes[i][j];
+
+                    break;
+                }
+                if (gotAMove)
+                {
+                    break;
+                }
+            }
+        }
+        if (gotAMove)
+        {
+            ComputerCompleteBox(box);
+            return;
+        }
+        //if not go for box that has two line drawn
+        for (int i = 0; i < Boxes.Count; i++)
+        {
+            for (int j = 0; j < Boxes[i].Count; j++)
+            {
+                if (Boxes[i][j].TotalLineDrawn() < 4)
+                {
+                    gotAMove = true;
+                    box = Boxes[i][j];
+
+                    break;
+                }
+                if (gotAMove)
+                {
+                    break;
+                }
+            }
+        }
+        if (gotAMove)
+        {
+            ComputerCompleteBox(box);
+            return;
+        }
+    }
+    public void ComputerCompleteBox(Box box)
     {
         if (!box.LeftLine.IsDrawn)
         {
@@ -703,7 +848,7 @@ public class DrawLine : MonoBehaviour
             ComputerDrawLine(box.BottomLine);
         }
     }
-    private void ComputerDrawLine(Line line)
+    public void ComputerDrawLine(Line line)
     {
         FirstClick(line.StartPoint);
         SecondClick(line.EndPoint);
