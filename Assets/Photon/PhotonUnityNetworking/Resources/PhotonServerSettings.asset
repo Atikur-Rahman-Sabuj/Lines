@@ -16,7 +16,7 @@ MonoBehaviour:
     AppIdRealtime: ea28c3b4-c9de-4149-a0c0-5b74b74a68d3
     AppIdChat: 
     AppIdVoice: 
-    AppVersion: v1
+    AppVersion: 
     UseNameServer: 1
     FixedRegion: 
     Server: 
@@ -24,22 +24,19 @@ MonoBehaviour:
     Protocol: 0
     EnableLobbyStatistics: 0
     NetworkLogging: 1
-  PunLogging: 2
+  PunLogging: 0
   EnableSupportLogger: 0
   RunInBackground: 1
   StartInOfflineMode: 0
   RpcList:
+  - ChangeTurn
   - ClickRpc
   - DestroyRpc
-  - DestroySpaceship
-  - Fire
-  - RespawnSpaceship
-  - SendData
-  - ChangeTurn
-  - OponentIncrementScore
   - OnOpponentLeftGame
-  - PlayAgainGotRequest
+  - OponentIncrementScore
   - PlayAgainAcceptedConfirm
+  - PlayAgainGotRequest
+  - SendData
   - TimeEndedMessageReceive
   DisableAutoOpenWizard: 1
-  ShowSettings: 1
+  ShowSettings: 0

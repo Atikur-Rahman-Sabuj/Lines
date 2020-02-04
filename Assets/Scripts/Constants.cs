@@ -20,4 +20,10 @@ public class Constants : MonoBehaviour
     public string SETTINGSOUND = "settingsound";
     [HideInInspector]
     public string SETTINGNOTIFICATION = "settingnotification";
+    [HideInInspector]
+    public string MOBILEGAMEMODE = "mobilegamemode";
+    [HideInInspector]
+    public string MOBILEGAMEMODEEASY = "easy";
+    [HideInInspector]
+    public string MOBILEGAMEMODEHARD = "hard";
 }

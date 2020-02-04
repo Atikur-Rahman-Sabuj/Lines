@@ -15,6 +15,8 @@ public class DrawLine : MonoBehaviour
     public GameObject GlobalPointObject;
     public GameObject GlobalLineObject;
     public GameObject GlobalBoxObject;
+    //play with mobile difficulty level
+    private string difficultyLevel;
     private int TotalPoints;
     private int TotalLines;
     private int TotalBox;
@@ -187,17 +189,10 @@ public class DrawLine : MonoBehaviour
         GlobalBoxObject.GetComponent<Transform>().localScale = new Vector3(PointDistance - 1, PointDistance - 1);
         PlayerManagement = gameObject.GetComponent<PlayerManagement>();
         PlayerManagement.SetPlayers( IsPlayingWithMobile);
-        if (!IsPlayingOnline)
-        {
-         //   PlayerLabel1.GetComponent<TextMeshProUGUI>().SetText(PlayerManagement.Player1.Name);
-         //   PlayerLabel2.GetComponent<TextMeshProUGUI>().SetText(PlayerManagement.Player2.Name);
-         //   PlayerScore1.GetComponent<TextMeshProUGUI>().SetText("0");
-         //   PlayerScore2.GetComponent<TextMeshProUGUI>().SetText("0");
-        //    Score.GetComponent<TextMeshProUGUI>().SetText("");
-        //    Turn.GetComponent<TextMeshProUGUI>().SetText("First player turn");
-        }
-        
-        
+
+        difficultyLevel = PlayerPrefs.GetString(GetComponent<Constants>().MOBILEGAMEMODE, GetComponent<Constants>().MOBILEGAMEMODEEASY);
+
+
         TotalPoints = TotalPointInEachSide * TotalPointInEachSide;
         TotalLines = (TotalPointInEachSide * (TotalPointInEachSide - 1)) * 2;
         TotalBox = (TotalPointInEachSide - 1) * (TotalPointInEachSide - 1);
@@ -299,49 +294,6 @@ public class DrawLine : MonoBehaviour
         }
     }
 
-    //Dead code remove in future
-    //public void OnResetClick()
-    //{
-    //    //PlayerPrefs.SetInt("STotalPointInEachSide", 5);
-    //    SceneManager.LoadScene(SceneManager.GetActiveScene().name);
-    //} 
-    //Dead code remove in future
-    //public void OnPointClick(GameObject ClickObject)
-    //{
-    //    Point point = null;
-    //    for (int i = 0; i < Points.Count; i++)
-    //    {
-    //        for (int j = 0; j < Points[i].Count; j++)
-    //        {
-    //            if (Points[i][j].IsThisPoint(ClickObject))
-    //            {
-    //                point = Points[i][j];
-    //            }
-    //        }
-    //    }
-
-    //    if (!hasPreviousClick)
-    //    {
-    //        FirstClick(point);
-    //    }
-    //    else
-    //    {
-    //        if (previousClickedPoint == point)
-    //        {
-    //            RemoveClickedColor(previousClickedPoint);
-    //            hasPreviousClick = false;
-    //            previousClickedPoint = null;
-    //            Debug.Log("Already Click in this");
-    //        }
-
-    //        else
-    //        {
-    //            SecondClick(point);
-    //            Debug.Log("Line Drawn");
-    //        }
-    //    }
-    //}
-
 
     private void FirstClick(Point point)
     {
@@ -403,9 +355,14 @@ public class DrawLine : MonoBehaviour
     {
         Debug.Log("inside coroutine");
         yield return new WaitForSeconds(2f);
-        GetComponent<MobileGameBrain>().ComputerTurnMedium(Boxes);
-        //ComputerTurnEasy();
-       // Turn.GetComponent<TextMeshProUGUI>().SetText("Computer turn");
+        if (difficultyLevel.Equals(GetComponent<Constants>().MOBILEGAMEMODEEASY))
+        {
+            ComputerTurnEasy();
+        }
+        else
+        {
+            GetComponent<MobileGameBrain>().ComputerTurnMedium(Boxes);
+        }
     }
     public void OnlineDrawLine(Vector3 startPoint, Vector3 endPoint)
     {

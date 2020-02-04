@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 using TMPro;
+using UnityEngine.UI;
 
 public class MainMenu : MonoBehaviour
 {
@@ -20,8 +21,11 @@ public class MainMenu : MonoBehaviour
     public TMP_InputField InputOnlinePlayer;
     [Header("Buttons")]
     public GameObject HomeButton;
+    public GameObject Easy;
+    public GameObject Hard;
 
     private Constants constans;
+    private string difficultyLevel;
 
     private void Start()
     {
@@ -31,7 +35,16 @@ public class MainMenu : MonoBehaviour
         InputFriendPlayer2.text = PlayerPrefs.GetString(constans.FRIENDGAMEPLAYERNAME2, "");
         InputOnlinePlayer.text = PlayerPrefs.GetString(constans.ONLINEGAMEPLAYERNAME, "");
         ParentCanvas.GetComponent<Animator>().SetTrigger("Scene_start");
-        
+        difficultyLevel = PlayerPrefs.GetString(GetComponent<Constants>().MOBILEGAMEMODE, GetComponent<Constants>().MOBILEGAMEMODEEASY);
+        if (difficultyLevel.Equals(GetComponent<Constants>().MOBILEGAMEMODEEASY))
+        {
+            OnEasyClick();
+        }
+        else
+        {
+            OnHardClick();
+        }
+
     }
     private void Update()
     {
@@ -49,9 +62,7 @@ public class MainMenu : MonoBehaviour
         FindObjectOfType<AudioManager>().Play("button_click");
         MainCanvas.SetActive(false);
         PlayWithMobileCanvas.SetActive(true);
-        ParentCanvas.GetComponent<Animator>().SetTrigger("MGMP_enter");
-        
-        
+        ParentCanvas.GetComponent<Animator>().SetTrigger("MGMP_enter"); 
     }
     public void OnPlayWithFriend()
     {
@@ -108,6 +119,32 @@ public class MainMenu : MonoBehaviour
         StartCoroutine(CoroutineLoadScene("PlayMobile"));
         //SceneManager.LoadScene("PlayMobile");
     }
+
+    public void OnEasyClick()
+    {
+        PlayerPrefs.SetString(GetComponent<Constants>().MOBILEGAMEMODE, GetComponent<Constants>().MOBILEGAMEMODEEASY);
+        Easy.GetComponent<Image>().fillCenter = true;
+        Easy.GetComponentInChildren<TextMeshProUGUI>().color = Color.white;
+        Hard.GetComponent<Image>().fillCenter = false;
+        Color color;
+        if (ColorUtility.TryParseHtmlString("#004355", out color))
+        {
+            Hard.GetComponentInChildren<TextMeshProUGUI>().color = color;
+        }
+    }
+    public void OnHardClick()
+    {
+        PlayerPrefs.SetString(GetComponent<Constants>().MOBILEGAMEMODE, GetComponent<Constants>().MOBILEGAMEMODEHARD);
+        Easy.GetComponent<Image>().fillCenter = false;
+        Color color;
+        if (ColorUtility.TryParseHtmlString("#004355", out color))
+        {
+            Easy.GetComponentInChildren<TextMeshProUGUI>().color = color;
+        }
+        Hard.GetComponent<Image>().fillCenter = true;
+        Hard.GetComponentInChildren<TextMeshProUGUI>().color = Color.white;
+    }
+
     public void OnPlayMobileEightClick()
     {
         FindObjectOfType<AudioManager>().Play("button_click");
