@@ -7,12 +7,13 @@ using UnityEngine.UI;
 
 public class MainMenu : MonoBehaviour
 {
-    [Header("Canvases")]
+    [Header("Panels")]
     public GameObject ParentCanvas;
     public GameObject MainCanvas;
     public GameObject PlayWithMobileCanvas;
     public GameObject PlayWithFriendCanvas;
     public GameObject PlayOnlineCanvas;
+    public GameObject ExitPanel;
 
     [Header("Inputs")]
     public TMP_InputField InputMobilePlayer;
@@ -48,6 +49,10 @@ public class MainMenu : MonoBehaviour
     }
     private void Update()
     {
+        if (Input.GetKeyDown(KeyCode.Escape))
+        {
+            ExitPanel.SetActive(true);
+        }
         if (MainCanvas.activeSelf)
         {
             HomeButton.SetActive(false);
@@ -184,7 +189,14 @@ public class MainMenu : MonoBehaviour
         FindObjectOfType<AudioManager>().Play("button_click");
         StartCoroutine(CoroutineLoadScene("Setting"));
     }
-
+    public void OnExitCancelClick()
+    {
+        ExitPanel.SetActive(false);
+    }
+    public void OnExitConfirmClick()
+    {
+        Application.Quit();
+    }
     public IEnumerator CoroutineLoadScene(string sceneName)
     {
         ParentCanvas.GetComponent<Animator>().SetTrigger("Scene_end");
@@ -194,17 +206,19 @@ public class MainMenu : MonoBehaviour
 
     public void OnSaveProgressClick()
     {
-        SaveSystem.SaveProgress("type1", 20, 14);
+        SaveSystem.SaveProgress("type2", "hard", "local", 20, 14);
     } 
     public void OnLoadProgressClick()
     {
         List<PlayerData> playerDatas = SaveSystem.LoadProgress();
         playerDatas.ForEach(playerData =>
         {
-            Debug.Log(playerData.gameType);
-        });
-        
+            Debug.Log(playerData.gameType + "TT" +  playerData.gameLevel + "TT" + playerData.opponentName + "TT" + playerData.myScore + "TT" + playerData.opponentScore);
+        }); 
     }
-
+    public void OnResetProgressClick()
+    {
+        SaveSystem.RemoveProgress();
+    }
 
 }

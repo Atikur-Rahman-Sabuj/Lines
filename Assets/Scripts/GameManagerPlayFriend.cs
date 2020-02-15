@@ -117,6 +117,8 @@ public class GameManagerPlayFriend : MonoBehaviour
             WinningText.SetText("Congratulations, You both won!!");
             WinningPanel.SetActive(true);
         }
+        //Save progress
+        SaveSystem.SaveProgress("Frient", "None", SecondPlayerName, FirstPlayerScore, SecondPlayerScore);
     }
     public IEnumerator CoroutineLoadScene(string sceneName)
     {

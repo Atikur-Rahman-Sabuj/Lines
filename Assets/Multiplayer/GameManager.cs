@@ -217,18 +217,24 @@ public class GameManager : MonoBehaviourPunCallbacks
         ResultText.text = "Congratulations! You won!";
         MainCanvas.GetComponent<Animator>().SetTrigger("RP_enter");
         WinPanel.SetActive(true);
+        //Save progress
+        SaveSystem.SaveProgress("Online", "None", OpponentName, OwnScore, OpponentScore);
     }
     public void OnLoose(int ownScore, int opponenetScore)
     {
         ResultText.text = "Better luck next time!";
         MainCanvas.GetComponent<Animator>().SetTrigger("RP_enter");
         WinPanel.SetActive(true);
+        //Save progress
+        SaveSystem.SaveProgress("Online", "None", OpponentName, OwnScore, OpponentScore);
     }
     public void OnDraw(int ownScore, int opponenetScore)
     {
         ResultText.text = "Congratulations! You both won!";
         MainCanvas.GetComponent<Animator>().SetTrigger("RP_enter");
         WinPanel.SetActive(true);
+        //Save progress
+        SaveSystem.SaveProgress("Online", "None", OpponentName, OwnScore, OpponentScore);
     }
     public IEnumerator CoroutineShowResult()
     {

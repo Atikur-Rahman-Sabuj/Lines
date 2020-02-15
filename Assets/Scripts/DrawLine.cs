@@ -12,8 +12,16 @@ public class DrawLine : MonoBehaviour
     private float PointDistance;
     public float StartingPointX = -5;
     public float StartingPointY = -5;
-    public GameObject GlobalPointObject;
+    [Header("Objets container")]
+    public GameObject PointLineBoxContainer;
+    public GameObject PointObjectsContainer;
+    public GameObject LineObjectsContainer;
+    public GameObject HorizontalLinesContainer;
+    public GameObject VerticalLinesContainer;
+    public GameObject BoxObjectsContainer;
+    [Header("Objects prefabs")]
     public GameObject GlobalLineObject;
+    public GameObject GlobalPointObject;
     public GameObject GlobalBoxObject;
     //play with mobile difficulty level
     private string difficultyLevel;
@@ -42,9 +50,9 @@ public class DrawLine : MonoBehaviour
     {
         public GameObject PointObject;
         public Vector3 Position;
-        public Point(GameObject pointObject, Vector3 position)
+        public Point(GameObject pointObject, GameObject pointObjectsContainer, Vector3 position)
         {
-            PointObject = Instantiate(pointObject);
+            PointObject = Instantiate(pointObject, pointObjectsContainer.transform);
             Position = position;
             PointObject.GetComponent<Transform>().position = position;
         }
@@ -57,35 +65,48 @@ public class DrawLine : MonoBehaviour
     public class Line
     {
         public GameObject LineObject;
+        public GameObject LineObjectsContainer;
         public Point StartPoint;
         public Point EndPoint;
         public Boolean IsDrawn;
-        public Line(GameObject lineObject, Point startPoint, Point endPoint)
+        public Boolean IsHorizontal;
+        public Line(GameObject lineObject, GameObject lineObjectsContainer, Point startPoint, Point endPoint, Boolean isHorizontal = true)
         {
             this.LineObject = lineObject;
+            this.LineObjectsContainer = lineObjectsContainer;
             this.StartPoint = startPoint;
             this.EndPoint = endPoint;
+            this.IsHorizontal = isHorizontal;
             IsDrawn = false;
+
         }
         public void DrawLine(bool isFirstPlayerTurn, PlayerManagement playerManagement)
         {
             IsDrawn = true;
-            LineObject = Instantiate(LineObject);
+            if (IsHorizontal)
+            {
+                LineObject = Instantiate(LineObject, LineObjectsContainer.transform);
+            }
+            else
+            {
+                LineObject = Instantiate(LineObject, LineObjectsContainer.transform);
+            }
+ 
             //Vector3 middlePoint = (StartPoint.Position + EndPoint.Position) / 2;
             Vector3 startPoint = StartPoint.Position;
             startPoint.z = 0;
             Vector3 endPoint = EndPoint.Position;
             endPoint.z = 0;
-            LineObject.GetComponent<LineRenderer>().SetPositions(new Vector3[] { startPoint, endPoint });
+            LineObject.GetComponentInChildren<LineRenderer>().SetPositions(new Vector3[] { startPoint, endPoint });
             if (isFirstPlayerTurn)
             {
-                LineObject.GetComponent<LineRenderer>().GetComponent<Renderer>().material.SetColor("_EmissionColor", playerManagement.Player1.Color);
+                LineObject.GetComponentInChildren<LineRenderer>().GetComponentInChildren<Renderer>().material.SetColor("_EmissionColor", playerManagement.Player1.Color);
             }
             else
             {
-                LineObject.GetComponent<LineRenderer>().GetComponent<Renderer>().material.SetColor("_EmissionColor", playerManagement.Player2.Color);
+                LineObject.GetComponentInChildren<LineRenderer>().GetComponentInChildren<Renderer>().material.SetColor("_EmissionColor", playerManagement.Player2.Color);
             }
-            LineObject.GetComponent<Animator>().Play("LineFadeAndShow");
+            LineObject.GetComponentInChildren<Animator>().Play("LineFadeAndShow");
             FindObjectOfType<AudioManager>().Play("draw_line");
 
         }
@@ -111,15 +132,17 @@ public class DrawLine : MonoBehaviour
     public class Box
     {
         public GameObject BoxObject;
+        public GameObject BoxObjectsContainer;
         public Vector3 Position;
         public Line TopLine;
         public Line BottomLine;
         public Line LeftLine;
         public Line RightLine;
         public Boolean IsDrawn;
-        public Box(GameObject boxObject, Line topLine, Line bottomLine, Line leftLine, Line rightLine)
+        public Box(GameObject boxObject, GameObject boxObjectsContainer, Line topLine, Line bottomLine, Line leftLine, Line rightLine)
         {
             BoxObject = boxObject;
+            BoxObjectsContainer = boxObjectsContainer;
             TopLine = topLine;
             BottomLine = bottomLine;
             LeftLine = leftLine;
@@ -129,20 +152,20 @@ public class DrawLine : MonoBehaviour
         }
         public void DrawBox(bool isFirstPlayerTurn, PlayerManagement playerManagement)
         {
-            BoxObject = Instantiate(BoxObject);
+            BoxObject = Instantiate(BoxObject, BoxObjectsContainer.transform);
             BoxObject.GetComponent<Transform>().position = Position;
             IsDrawn = true;
             if (isFirstPlayerTurn)
             {
-                BoxObject.GetComponent<Renderer>().material.SetColor("_EmissionColor", playerManagement.Player1.Color);
+                BoxObject.GetComponentInChildren<Renderer>().material.SetColor("_EmissionColor", playerManagement.Player1.Color);
             }
             else
             {
-                BoxObject.GetComponent<Renderer>().material.SetColor("_EmissionColor", playerManagement.Player2.Color);
+                BoxObject.GetComponentInChildren<Renderer>().material.SetColor("_EmissionColor", playerManagement.Player2.Color);
             }
             FindObjectOfType<AudioManager>().Play("draw_box");
 
-            BoxObject.GetComponent<Animator>().Play("BoxAnimation");
+            BoxObject.GetComponentInChildren<Animator>().Play("BoxAnimation");
         }
         public Boolean IsLineOfThisBox(Line line)
         {
@@ -243,7 +266,7 @@ public class DrawLine : MonoBehaviour
             for (int j = 0; j < TotalPointInEachSide - 1; j++)
             {
                 //Line topLine, Line bottomLine, Line leftLine, Line rightLine
-                Box box = new Box(GlobalBoxObject, HorizontalLines[i+1][j], HorizontalLines[i][j], VerticalLines[j][i], VerticalLines[j+1][i]);
+                Box box = new Box(GlobalBoxObject, BoxObjectsContainer, HorizontalLines[i+1][j], HorizontalLines[i][j], VerticalLines[j][i], VerticalLines[j+1][i]);
                 boxes.Add(box);
             }
             Boxes.Add(boxes);
@@ -260,10 +283,10 @@ public class DrawLine : MonoBehaviour
             List<Line> verticalLines = new List<Line>();
             for (int j = 0; j < TotalPointInEachSide-1; j++)
             {
-                Line horizontalLine = new Line(GlobalLineObject, Points[i][j], Points[i][j + 1]);
+                Line horizontalLine = new Line(GlobalLineObject, VerticalLinesContainer, Points[i][j], Points[i][j + 1]);
 
                 horizontalLines.Add(horizontalLine);
-                Line verticalLine = new Line(GlobalLineObject, Points[j][i], Points[j+1][i]);
+                Line verticalLine = new Line(GlobalLineObject, HorizontalLinesContainer, Points[j][i], Points[j+1][i], false);
 
                 verticalLines.Add(verticalLine);
             }
@@ -285,7 +308,7 @@ public class DrawLine : MonoBehaviour
             for (int j = 0; j < TotalPointInEachSide; j++)
             {
                 Vector3 position = new Vector3(pointX, pointY, -10);
-                points.Add(new Point(GlobalPointObject, position));
+                points.Add(new Point(GlobalPointObject, PointObjectsContainer, position));
                 pointX += PointDistance;
             }
             Points.Add(points);
@@ -554,11 +577,11 @@ public class DrawLine : MonoBehaviour
     }
     private void ApplyClickedColor(Point point)
     {
-        point.PointObject.GetComponent<Renderer>().material.SetColor("_EmissionColor", Color.blue);
+        point.PointObject.GetComponentInChildren<Renderer>().material.SetColor("_EmissionColor", Color.blue);
     }
     private void RemoveClickedColor(Point point)
     {
-        point.PointObject.GetComponent<Renderer>().material.SetColor("_EmissionColor", Color.white);
+        point.PointObject.GetComponentInChildren<Renderer>().material.SetColor("_EmissionColor", Color.white);
     }
     private void ComputerTurnEasy()
     {

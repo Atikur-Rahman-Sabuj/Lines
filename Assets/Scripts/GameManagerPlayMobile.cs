@@ -22,8 +22,10 @@ public class GameManagerPlayMobile : MonoBehaviour
     private int FirstPlayerScore;
     private int SecondPlayerScore;
     private int TotalScore;
+    private string difficultyLevel;
     private void Start()
     {
+        difficultyLevel = PlayerPrefs.GetString(Script.GetComponent<Constants>().MOBILEGAMEMODE, Script.GetComponent<Constants>().MOBILEGAMEMODEEASY);
         FirstPlayerName = PlayerPrefs.GetString(Script.GetComponent<Constants>().MOBILEGAMEPLAYERNAME);
         if (FirstPlayerName.Equals("")|| FirstPlayerName.Equals(null))
         {
@@ -114,6 +116,8 @@ public class GameManagerPlayMobile : MonoBehaviour
             WinningText.SetText("Congratulations, You both won!!");
             WinningPanel.SetActive(true);
         }
+        //Save progress
+        SaveSystem.SaveProgress("Mobile", difficultyLevel, "Mobile", FirstPlayerScore, SecondPlayerScore);
     }
     public IEnumerator CoroutineLoadScene(string sceneName)
     {

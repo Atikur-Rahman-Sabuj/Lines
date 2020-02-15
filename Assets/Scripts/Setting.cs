@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.SceneManagement;
+using TMPro;
 
 public class Setting : MonoBehaviour
 {
@@ -11,9 +12,58 @@ public class Setting : MonoBehaviour
     public GameObject ButtonNotificationOn;
     public GameObject ButtonNotificationOff;
 
+    public Transform ListContainer;
+    public GameObject ListItemPrefab;
+
+    public GameObject GameHistoryPanel;
+
+
+
     private bool IsSoundOn;
     private bool IsNotificationOn;
-    // Start is called before the first frame update
+
+    public class ListItem
+    {
+        public GameObject ItemObject;
+        public TextMeshProUGUI GameType;
+        public TextMeshProUGUI GameLevel;
+        public TextMeshProUGUI OpponentName;
+        public TextMeshProUGUI MyScore;
+        public TextMeshProUGUI OpponentScore;
+        public ListItem(GameObject SourcePrefab, Transform Parent, PlayerData playerData)
+        {
+            ItemObject = Instantiate(SourcePrefab, Parent);
+            //TextObject = ItemObject.GetComponentInChildren<TextMeshProUGUI>();
+            GameType = ItemObject.transform.GetChild(0).GetComponent<TextMeshProUGUI>();
+            GameLevel = ItemObject.transform.GetChild(1).GetComponent<TextMeshProUGUI>();
+            OpponentName = ItemObject.transform.GetChild(2).GetComponent<TextMeshProUGUI>();
+            MyScore = ItemObject.transform.GetChild(3).GetComponent<TextMeshProUGUI>();
+            OpponentScore = ItemObject.transform.GetChild(4).GetComponent<TextMeshProUGUI>();
+            if (playerData.gameType != null)
+            {
+                GameType.SetText(playerData.gameType.ToString());
+            }
+            
+            if (playerData.gameLevel != null)
+            {
+                GameLevel.SetText(playerData.gameLevel.ToString());
+            }
+            if (playerData.opponentName != null)
+            {
+                OpponentName.SetText(playerData.opponentName.ToString());
+            }
+            if (playerData.myScore != null)
+            {
+                MyScore.SetText("My score: " + playerData.myScore.ToString());
+            }
+            if (playerData.opponentScore != null)
+            {
+                OpponentScore.SetText("Opponent score: " + playerData.opponentScore.ToString());
+            }                      
+        }
+    }
+
+
     void Start()
     {
         MainCanvas.GetComponent<Animator>().SetTrigger("Scene_start");
@@ -40,6 +90,18 @@ public class Setting : MonoBehaviour
             ButtonNotificationOff.SetActive(false);
             ButtonNotificationOn.SetActive(true);
         }
+        LoadGameHistory();
+    }
+
+    public void LoadGameHistory()
+    {
+        List<PlayerData> playerDatas = SaveSystem.LoadProgress();
+        playerDatas.Reverse();
+        playerDatas.ForEach(playerData =>
+        {
+            new ListItem(ListItemPrefab, ListContainer, playerData);
+        });
+
     }
 
 
@@ -77,6 +139,14 @@ public class Setting : MonoBehaviour
         {
             StartCoroutine(CoroutineDeactiveActiveObject(ButtonNotificationOn, ButtonNotificationOff, "Notification_on"));
         }
+    }
+    public void OnShowHistoryClick()
+    {
+        GameHistoryPanel.SetActive(true);
+    }
+    public void OnHideHistoryClick()
+    {
+        GameHistoryPanel.SetActive(false);
     }
     public IEnumerator CoroutineLoadScene(string sceneName)
     {
