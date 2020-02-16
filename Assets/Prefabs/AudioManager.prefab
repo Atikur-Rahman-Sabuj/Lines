@@ -46,7 +46,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   sounds:
   - name: button_click
-    clip: {fileID: 8300000, guid: 45a9b1664fcc0164299f37727f9b85c9, type: 3}
+    clip: {fileID: 8300000, guid: 2ac0846b57c83154d83c97dd1f88b037, type: 3}
     volume: 1
     pitch: 1
     source: {fileID: 0}
@@ -89,3 +89,6 @@ MonoBehaviour:
   TOTALPOINTS: totapoints
   SETTINGSOUND: settingsound
   SETTINGNOTIFICATION: settingnotification
+  MOBILEGAMEMODE: mobilegamemode
+  MOBILEGAMEMODEEASY: easy
+  MOBILEGAMEMODEHARD: hard

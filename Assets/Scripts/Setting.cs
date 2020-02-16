@@ -41,25 +41,19 @@ public class Setting : MonoBehaviour
             OpponentScore = ItemObject.transform.GetChild(4).GetComponent<TextMeshProUGUI>();
             if (playerData.gameType != null)
             {
-                GameType.SetText(playerData.gameType.ToString());
+                GameType.SetText("Type: " + playerData.gameType.ToString());
             }
-            
+
             if (playerData.gameLevel != null)
             {
-                GameLevel.SetText(playerData.gameLevel.ToString());
+                GameLevel.SetText("Level: " + playerData.gameLevel.ToString());
             }
             if (playerData.opponentName != null)
             {
-                OpponentName.SetText(playerData.opponentName.ToString());
+                OpponentName.SetText("Opponent: " + playerData.opponentName.ToString());
             }
-            if (playerData.myScore != null)
-            {
-                MyScore.SetText("My score: " + playerData.myScore.ToString());
-            }
-            if (playerData.opponentScore != null)
-            {
-                OpponentScore.SetText("Opponent score: " + playerData.opponentScore.ToString());
-            }                      
+            MyScore.SetText("My score: " + playerData.myScore.ToString());
+            OpponentScore.SetText("Opponent score: " + playerData.opponentScore.ToString());
         }
     }
 

@@ -118,7 +118,7 @@ public class GameManagerPlayFriend : MonoBehaviour
             WinningPanel.SetActive(true);
         }
         //Save progress
-        SaveSystem.SaveProgress("Frient", "None", SecondPlayerName, FirstPlayerScore, SecondPlayerScore);
+        SaveSystem.SaveProgress("Friend", "None", SecondPlayerName, FirstPlayerScore, SecondPlayerScore);
     }
     public IEnumerator CoroutineLoadScene(string sceneName)
     {
