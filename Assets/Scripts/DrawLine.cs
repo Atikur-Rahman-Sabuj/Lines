@@ -377,7 +377,7 @@ public class DrawLine : MonoBehaviour
     public IEnumerator CoroutineMobileMove()
     {
         Debug.Log("inside coroutine");
-        yield return new WaitForSeconds(2f);
+        yield return new WaitForSeconds(1f);
         if (difficultyLevel.Equals(GetComponent<Constants>().MOBILEGAMEMODEEASY))
         {
             ComputerTurnEasy();
